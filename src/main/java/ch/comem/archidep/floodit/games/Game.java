@@ -27,30 +27,18 @@ public class Game {
   private Long version;
 
   public Game() {
-    // No-args constructor for Hibernate
+    // Nothing to do
   }
 
   public Long getId() {
     return id;
   }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
-
   public LocalDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public void setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
-  }
-
   public Long getVersion() {
     return version;
-  }
-
-  public void setVersion(Long version) {
-    this.version = version;
   }
 }
