@@ -1,0 +1,8 @@
+spring:
+  config:
+    import: ./application-test.local.yml
+  jpa:
+    properties:
+      javax.persistence.schema-generation.scripts.action: create
+      javax.persistence.schema-generation.scripts.create-target: src/main/resources/db/create.sql
+      javax.persistence.schema-generation.scripts.create-source: metadata
