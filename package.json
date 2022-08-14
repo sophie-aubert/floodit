@@ -1,0 +1,39 @@
+{
+  "name": "floodit",
+  "version": "0.0.0",
+  "description": "Flood It",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlphaHydrae/floodit.git"
+  },
+  "keywords": [
+    "floodit",
+    "game"
+  ],
+  "author": "Simon Oulevay <npm@alphahydrae.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AlphaHydrae/floodit/issues"
+  },
+  "homepage": "https://github.com/AlphaHydrae/floodit#readme",
+  "scripts": {
+    "check": "npm run --workspace backend check",
+    "check:write": "npm run --workspace backend check:write",
+    "doctoc": "doctoc --github --notitle README.md && prettier --write README.md",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "devDependencies": {
+    "doctoc": "^2.0.1",
+    "prettier": "^2.3.2",
+    "prettier-plugin-java": "^1.3.0"
+  },
+  "engines": {
+    "node": ">= 18",
+    "npm": ">= 7"
+  }
+}

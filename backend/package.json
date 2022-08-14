@@ -1,0 +1,22 @@
+{
+  "name": "floodit-backend",
+  "version": "0.0.0",
+  "description": "Flood It backend",
+  "license": "MIT",
+  "author": "Simon Oulevay <npm@alphahydrae.com>",
+  "private": true,
+  "scripts": {
+    "check": "npm run format",
+    "check:write": "npm run format:write",
+    "format": "prettier --config ../.prettierrc.json --check .",
+    "format:write": "prettier --config ../.prettierrc.json --write ."
+  },
+  "devDependencies": {
+    "prettier": "^2.3.2",
+    "prettier-plugin-java": "^1.3.0"
+  },
+  "engines": {
+    "node": ">= 18",
+    "npm": ">= 7"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=827846
+  "recommendations": [
+    "angular.ng-template",
+    "EditorConfig.EditorConfig",
+    "esbenp.prettier-vscode",
+    "sonarsource.sonarlint-vscode",
+    "dbaeumer.vscode-eslint",
+    "vscjava.vscode-java-pack"
+  ]
+}
