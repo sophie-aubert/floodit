@@ -1,10 +1,11 @@
 package ch.comem.archidep.floodit.games;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -12,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import ch.comem.archidep.floodit.FloodItRoutes;
 import ch.comem.archidep.floodit.games.data.CreateGameDto;
 import ch.comem.archidep.floodit.utils.AbstractControllerTests;
+import ch.comem.archidep.floodit.utils.Generate;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -34,9 +36,8 @@ class GameControllerTests extends AbstractControllerTests {
     var requestBody = GameFixtures.createGameDto();
 
     var result = GameFixtures.createdGameDto();
-    doReturn(result)
-      .when(this.gameService)
-      .createGame(any(CreateGameDto.class));
+    when(this.gameService.createGame(any(CreateGameDto.class)))
+      .thenReturn(result);
 
     perform(createGameRequest(requestBody))
       .andExpect(status().isCreated())
@@ -45,9 +46,25 @@ class GameControllerTests extends AbstractControllerTests {
     verify(this.gameService, times(1)).createGame(any(CreateGameDto.class));
   }
 
+  @Test
+  void list_recent_games() throws Exception {
+    var result = Generate.randomListOf(GameFixtures::gameDto, 3);
+    when(this.gameService.listRecentGames()).thenReturn(result);
+
+    perform(listRecentGames())
+      .andExpect(status().isOk())
+      .andExpect(content().json(serialize(result)));
+
+    verify(this.gameService, times(1)).listRecentGames();
+  }
+
   private MockHttpServletRequestBuilder createGameRequest(
     CreateGameDto requestBody
   ) throws Exception {
     return post(FloodItRoutes.GAMES).content(serialize(requestBody));
+  }
+
+  private MockHttpServletRequestBuilder listRecentGames() throws Exception {
+    return get(FloodItRoutes.GAMES);
   }
 }

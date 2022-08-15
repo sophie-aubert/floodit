@@ -3,6 +3,7 @@ package ch.comem.archidep.floodit.games;
 import ch.comem.archidep.floodit.games.data.CreateGameDto;
 import ch.comem.archidep.floodit.games.data.CreateGameDtoBuilder;
 import ch.comem.archidep.floodit.games.data.CreatedGameDto;
+import ch.comem.archidep.floodit.games.data.GameDto;
 import ch.comem.archidep.floodit.games.data.MoveDto;
 import ch.comem.archidep.floodit.games.data.PlayDto;
 import ch.comem.archidep.floodit.games.data.PlayDtoBuilder;
@@ -24,7 +25,6 @@ public class GameFixtures extends AbstractFixtures {
   public static CreatedGameDto createdGameDto() {
     return new CreatedGameDto(
       databaseId(),
-      FAKER.internet().password(),
       GameState.ONGOING,
       FAKER.name().username(),
       FAKER.number().numberBetween(2, 100),
@@ -33,7 +33,8 @@ public class GameFixtures extends AbstractFixtures {
       FAKER.number().numberBetween(1, 100),
       Collections.emptyList(),
       LocalDateTime.now(),
-      LocalDateTime.now()
+      LocalDateTime.now(),
+      FAKER.internet().password()
     );
   }
 
@@ -65,6 +66,21 @@ public class GameFixtures extends AbstractFixtures {
 
   public Game game(Consumer<GameBuilder> build) {
     return this.gameRepository.saveAndFlush(newGame(build));
+  }
+
+  public static GameDto gameDto() {
+    return new GameDto(
+      databaseId(),
+      GameState.ONGOING,
+      FAKER.name().username(),
+      FAKER.number().numberBetween(2, 100),
+      FAKER.number().numberBetween(2, 100),
+      FAKER.number().numberBetween(2, 10),
+      FAKER.number().numberBetween(1, 100),
+      Collections.emptyList(),
+      LocalDateTime.now(),
+      LocalDateTime.now()
+    );
   }
 
   public static MoveDto moveDto() {

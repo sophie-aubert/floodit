@@ -2,8 +2,10 @@ package ch.comem.archidep.floodit.games;
 
 import ch.comem.archidep.floodit.games.data.CreateGameDto;
 import ch.comem.archidep.floodit.games.data.CreatedGameDto;
+import ch.comem.archidep.floodit.games.data.GameDto;
 import ch.comem.archidep.floodit.games.data.MoveDto;
 import ch.comem.archidep.floodit.games.data.PlayDto;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +39,13 @@ public class GameService {
     LOGGER.info("Created game {}", createdGame);
 
     return createdGame.toCreatedDto();
+  }
+
+  public List<GameDto> listRecentGames() {
+    return this.gameRepository.findTop10ByOrderByCreatedAtDesc()
+      .stream()
+      .map(Game::toDto)
+      .toList();
   }
 
   public MoveDto play(PlayDto dto) {

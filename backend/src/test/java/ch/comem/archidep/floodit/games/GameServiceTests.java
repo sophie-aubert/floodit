@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.blankOrNullString;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -17,6 +18,7 @@ import static org.hamcrest.Matchers.lessThanOrEqualTo;
 
 import ch.comem.archidep.floodit.business.Position;
 import ch.comem.archidep.floodit.games.data.CreateGameDto;
+import ch.comem.archidep.floodit.games.data.GameDto;
 import ch.comem.archidep.floodit.utils.AbstractServiceTests;
 import ch.comem.archidep.floodit.utils.TestUtils;
 import java.time.LocalDateTime;
@@ -42,24 +44,24 @@ class GameServiceTests extends AbstractServiceTests {
     var now = LocalDateTime.now();
     var result = this.gameService.createGame(dto);
 
-    assertThat(result.id(), is(greaterThanOrEqualTo(1L)));
+    assertThat(result.getId(), is(greaterThanOrEqualTo(1L)));
     assertThat(
-      result.secret(),
+      result.getSecret(),
       allOf(hasLength(255), not(blankOrNullString()))
     );
-    assertThat(result.state(), is(GameState.ONGOING));
-    assertThat(result.playerName(), is(equalTo("John Doe")));
-    assertThat(result.boardWidth(), is(equalTo(30)));
-    assertThat(result.boardHeight(), is(equalTo(30)));
-    assertThat(result.numberOfColors(), is(equalTo(6)));
-    assertThat(result.maxMoves(), is(equalTo(25)));
-    assertThat(result.moves(), is(empty()));
+    assertThat(result.getState(), is(GameState.ONGOING));
+    assertThat(result.getPlayerName(), is(equalTo("John Doe")));
+    assertThat(result.getBoardWidth(), is(equalTo(30)));
+    assertThat(result.getBoardHeight(), is(equalTo(30)));
+    assertThat(result.getNumberOfColors(), is(equalTo(6)));
+    assertThat(result.getMaxMoves(), is(equalTo(25)));
+    assertThat(result.getMoves(), is(empty()));
     assertThat(
-      result.createdAt(),
+      result.getCreatedAt(),
       is(allOf(greaterThanOrEqualTo(now), lessThan(now.plusSeconds(3))))
     );
     assertThat(
-      result.updatedAt(),
+      result.getUpdatedAt(),
       is(allOf(greaterThanOrEqualTo(now), lessThan(now.plusSeconds(3))))
     );
     assertThat(
@@ -80,20 +82,26 @@ class GameServiceTests extends AbstractServiceTests {
     );
 
     transactionWithoutResult(() -> {
-      var createdGame = this.getGame(result.id());
-      assertThat(createdGame.getSecret(), is(equalTo(result.secret())));
-      assertThat(createdGame.getState(), is(equalTo(result.state())));
-      assertThat(createdGame.getPlayerName(), is(equalTo(result.playerName())));
-      assertThat(createdGame.getBoardWidth(), is(equalTo(result.boardWidth())));
+      var createdGame = this.getGame(result.getId());
+      assertThat(createdGame.getSecret(), is(equalTo(result.getSecret())));
+      assertThat(createdGame.getState(), is(equalTo(result.getState())));
+      assertThat(
+        createdGame.getPlayerName(),
+        is(equalTo(result.getPlayerName()))
+      );
+      assertThat(
+        createdGame.getBoardWidth(),
+        is(equalTo(result.getBoardWidth()))
+      );
       assertThat(
         createdGame.getBoardHeight(),
-        is(equalTo(result.boardHeight()))
+        is(equalTo(result.getBoardHeight()))
       );
       assertThat(
         createdGame.getNumberOfColors(),
-        is(equalTo(result.numberOfColors()))
+        is(equalTo(result.getNumberOfColors()))
       );
-      assertThat(createdGame.getMaxMoves(), is(equalTo(result.maxMoves())));
+      assertThat(createdGame.getMaxMoves(), is(equalTo(result.getMaxMoves())));
       assertThat(
         createdGame.getSeed(),
         is(
@@ -104,8 +112,14 @@ class GameServiceTests extends AbstractServiceTests {
         )
       );
       assertThat(createdGame.getMoves(), is(empty()));
-      assertThat(createdGame.getCreatedAt(), is(equalTo(result.createdAt())));
-      assertThat(createdGame.getUpdatedAt(), is(equalTo(result.updatedAt())));
+      assertThat(
+        createdGame.getCreatedAt(),
+        is(equalTo(result.getCreatedAt()))
+      );
+      assertThat(
+        createdGame.getUpdatedAt(),
+        is(equalTo(result.getUpdatedAt()))
+      );
       assertThat(createdGame.getVersion(), is(equalTo(0L)));
       assertThat(
         TestUtils.getFieldNames(createdGame),
@@ -126,6 +140,30 @@ class GameServiceTests extends AbstractServiceTests {
         )
       );
     });
+  }
+
+  @Test
+  void list_games() {
+    var gamePlayedTwoDaysAgo =
+      this.gameFixtures.game(builder ->
+          builder.withCreatedAt(LocalDateTime.now().minusDays(2))
+        );
+    var gamePlayedOneWeekAgo =
+      this.gameFixtures.game(builder ->
+          builder.withCreatedAt(LocalDateTime.now().minusWeeks(1))
+        );
+    var gamePlayedJustNow = this.gameFixtures.game();
+
+    var result = this.gameService.listRecentGames();
+
+    assertThat(
+      result.stream().map(GameDto::getId).toList(),
+      contains(
+        gamePlayedJustNow.getId(),
+        gamePlayedTwoDaysAgo.getId(),
+        gamePlayedOneWeekAgo.getId()
+      )
+    );
   }
 
   @Test

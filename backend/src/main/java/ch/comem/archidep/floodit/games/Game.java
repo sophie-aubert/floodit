@@ -3,6 +3,7 @@ package ch.comem.archidep.floodit.games;
 import ch.comem.archidep.floodit.business.Board;
 import ch.comem.archidep.floodit.games.data.CreateGameDto;
 import ch.comem.archidep.floodit.games.data.CreatedGameDto;
+import ch.comem.archidep.floodit.games.data.GameDto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +16,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.SortNatural;
-import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = Game.TABLE_NAME)
@@ -63,11 +64,9 @@ public class Game {
   @SortNatural
   private List<Move> moves;
 
-  @CreationTimestamp
   @Column(nullable = false)
   private LocalDateTime createdAt;
 
-  @UpdateTimestamp
   @Column(nullable = false)
   private LocalDateTime updatedAt;
 
@@ -99,6 +98,22 @@ public class Game {
     this.moves = new ArrayList<>();
   }
 
+  @PrePersist
+  void prePersist() {
+    if (this.createdAt == null) {
+      this.createdAt = LocalDateTime.now();
+    }
+
+    if (this.updatedAt == null) {
+      this.updatedAt = this.createdAt;
+    }
+  }
+
+  @PreUpdate
+  void preUpdate() {
+    this.updatedAt = LocalDateTime.now();
+  }
+
   public Board buildCurrentBoard() {
     var board = new Board(
       this.boardWidth,
@@ -114,10 +129,9 @@ public class Game {
     return board;
   }
 
-  public CreatedGameDto toCreatedDto() {
-    return new CreatedGameDto(
+  public GameDto toDto() {
+    return new GameDto(
       this.id,
-      this.secret,
       this.state,
       this.playerName,
       this.boardWidth,
@@ -127,6 +141,22 @@ public class Game {
       new ArrayList<>(),
       this.createdAt,
       this.updatedAt
+    );
+  }
+
+  public CreatedGameDto toCreatedDto() {
+    return new CreatedGameDto(
+      this.id,
+      this.state,
+      this.playerName,
+      this.boardWidth,
+      this.boardHeight,
+      this.numberOfColors,
+      this.maxMoves,
+      new ArrayList<>(),
+      this.createdAt,
+      this.updatedAt,
+      this.secret
     );
   }
 

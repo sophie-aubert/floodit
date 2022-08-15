@@ -1,6 +1,7 @@
 package ch.comem.archidep.floodit.games;
 
 import ch.comem.archidep.floodit.games.data.CreateGameDtoBuilder;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import org.apache.commons.lang3.builder.Builder;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -10,6 +11,7 @@ public class GameBuilder implements Builder<Game> {
   private final CreateGameDtoBuilder dtoBuilder;
   private Long id;
   private Long seed;
+  private LocalDateTime createdAt;
 
   public GameBuilder(CreateGameDtoBuilder dtoBuilder, long seed) {
     this.dtoBuilder =
@@ -52,12 +54,18 @@ public class GameBuilder implements Builder<Game> {
     return this;
   }
 
+  public GameBuilder withCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+    return this;
+  }
+
   @Override
   public Game build() {
     var game = new Game(this.dtoBuilder.build());
 
     ReflectionTestUtils.setField(game, "id", this.id);
     ReflectionTestUtils.setField(game, "seed", this.seed);
+    ReflectionTestUtils.setField(game, "createdAt", this.createdAt);
 
     return game;
   }

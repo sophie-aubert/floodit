@@ -1,0 +1,12 @@
+<p *ngIf="!games"><em>Loading...</em></p>
+
+<ul *ngIf="games?.length !== 0">
+  <li *ngFor="let game of games">
+    Game by {{ game.playerName }} created on
+    {{ game.createdAt.toLocaleString(DateTime.DATETIME_FULL) }}
+  </li>
+</ul>
+
+<p *ngIf="games?.length === 0"><em>No one has played yet.</em></p>
+
+<button type="button" (click)="createGame()">Start game</button>
