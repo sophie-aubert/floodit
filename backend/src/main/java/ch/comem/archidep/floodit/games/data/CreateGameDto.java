@@ -9,5 +9,6 @@ public record CreateGameDto(
   @NotBlank String playerName,
   @NotNull @Min(2) @Max(100) Integer boardWidth,
   @NotNull @Min(2) @Max(100) Integer boardHeight,
-  @NotNull @Min(2) @Max(10) Integer numberOfColors
+  @NotNull @Min(2) @Max(10) Integer numberOfColors,
+  @NotNull @Min(1) Integer maxMoves
 ) {}

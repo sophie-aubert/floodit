@@ -1,4 +1,5 @@
 # https://git-scm.com/docs/gitignore
 /config/application-*.local.yml
+/coverage
 /node_modules
 /target

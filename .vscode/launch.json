@@ -1,0 +1,24 @@
+{
+  // You can use IntelliSense suggestions (Ctrl-Space) to find out which
+  // attributes exist for a specific debugger. Hover help is also available for
+  // all attributes. See https://go.microsoft.com/fwlink/?linkid=830387 for more
+  // information.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Flood It",
+      "request": "launch",
+      "mainClass": "ch.comem.archidep.floodit.FloodItApplication",
+      "projectName": "floodit",
+      "console": "internalConsole",
+      "args": [],
+      "cwd": "backend",
+      "presentation": {
+        "hidden": false,
+        "group": "floodit_applications",
+        "order": 1
+      }
+    }
+  ]
+}
