@@ -23,6 +23,7 @@ public record CreatedGameDto(
     Objects.requireNonNull(secret, "Secret is required");
     Objects.requireNonNull(state, "State is required");
     Objects.requireNonNull(playerName, "Player name is required");
+    Objects.requireNonNull(moves, "Moves are required");
     Objects.requireNonNull(createdAt, "Creation date is required");
     Objects.requireNonNull(updatedAt, "Last modification date is required");
   }

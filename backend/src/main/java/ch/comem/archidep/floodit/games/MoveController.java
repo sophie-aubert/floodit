@@ -2,7 +2,7 @@ package ch.comem.archidep.floodit.games;
 
 import ch.comem.archidep.floodit.FloodItRoutes;
 import ch.comem.archidep.floodit.games.data.MoveDto;
-import ch.comem.archidep.floodit.games.data.PlayMoveDto;
+import ch.comem.archidep.floodit.games.data.PlayDto;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class MoveController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public MoveDto playMove(@Valid @RequestBody PlayMoveDto requestBody) {
+  public MoveDto playMove(@Valid @RequestBody PlayDto requestBody) {
     return this.gameService.play(requestBody);
   }
 }

@@ -1,0 +1,17 @@
+source $HOME/.screenrc
+
+screen -t db 0
+stuff "mysql -ufloodit -p"
+
+screen -t back 1
+stuff "cd backend\012mvn clean test"
+
+screen -t sh 2
+
+screen -t lint 3
+stuff "npm run check"
+
+screen -t front 4
+stuff "cd frontend\012npm start -- --open\012"
+
+select sh

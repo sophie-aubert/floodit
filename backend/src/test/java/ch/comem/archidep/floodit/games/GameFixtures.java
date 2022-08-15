@@ -4,8 +4,8 @@ import ch.comem.archidep.floodit.games.data.CreateGameDto;
 import ch.comem.archidep.floodit.games.data.CreateGameDtoBuilder;
 import ch.comem.archidep.floodit.games.data.CreatedGameDto;
 import ch.comem.archidep.floodit.games.data.MoveDto;
-import ch.comem.archidep.floodit.games.data.PlayMoveDto;
-import ch.comem.archidep.floodit.games.data.PlayMoveDtoBuilder;
+import ch.comem.archidep.floodit.games.data.PlayDto;
+import ch.comem.archidep.floodit.games.data.PlayDtoBuilder;
 import ch.comem.archidep.floodit.utils.AbstractFixtures;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -86,20 +86,20 @@ public class GameFixtures extends AbstractFixtures {
     return builder.build();
   }
 
-  public static PlayMoveDto playMoveDto() {
-    return playMoveDto(builder -> {});
+  public static PlayDto playDto() {
+    return playDto(builder -> {});
   }
 
-  public static PlayMoveDto playMoveDto(Game game) {
-    return playMoveDto(builder ->
+  public static PlayDto playDto(Game game) {
+    return playDto(builder ->
       builder
         .withGame(game)
         .withColor(FAKER.number().numberBetween(0, game.getNumberOfColors()))
     );
   }
 
-  public static PlayMoveDto playMoveDto(Consumer<PlayMoveDtoBuilder> build) {
-    var builder = new PlayMoveDtoBuilder(
+  public static PlayDto playDto(Consumer<PlayDtoBuilder> build) {
+    var builder = new PlayDtoBuilder(
       databaseId(),
       FAKER.number().numberBetween(2, 10)
     );

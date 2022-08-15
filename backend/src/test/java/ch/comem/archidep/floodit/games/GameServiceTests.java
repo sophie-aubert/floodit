@@ -131,7 +131,7 @@ class GameServiceTests extends AbstractServiceTests {
   @Test
   void play_the_first_move_in_a_game() {
     var game = this.gameFixtures.game(builder -> builder.withMaxMoves(3));
-    var dto = GameFixtures.playMoveDto(game);
+    var dto = GameFixtures.playDto(game);
 
     var now = LocalDateTime.now();
     var result = this.gameService.play(dto);
@@ -200,7 +200,7 @@ class GameServiceTests extends AbstractServiceTests {
     // 0 0 0
     // 0 0 0
     // 0 1 1
-    var firstMoveDto = GameFixtures.playMoveDto(builder ->
+    var firstMoveDto = GameFixtures.playDto(builder ->
       builder.withGame(game).withColor(0)
     );
     var firstMove = this.gameService.play(firstMoveDto);
@@ -218,7 +218,7 @@ class GameServiceTests extends AbstractServiceTests {
     // 1 1 1
     // 1 1 1
     // 1 1 1
-    var secondMoveDto = GameFixtures.playMoveDto(builder ->
+    var secondMoveDto = GameFixtures.playDto(builder ->
       builder.withGame(game).withColor(1)
     );
     var secondMove = this.gameService.play(secondMoveDto);
@@ -256,7 +256,7 @@ class GameServiceTests extends AbstractServiceTests {
     // 1 1 1
     // 0 0 1
     // 0 1 1
-    var firstMoveDto = GameFixtures.playMoveDto(builder ->
+    var firstMoveDto = GameFixtures.playDto(builder ->
       builder.withGame(game).withColor(1)
     );
     var firstMove = this.gameService.play(firstMoveDto);
@@ -274,7 +274,7 @@ class GameServiceTests extends AbstractServiceTests {
     // 2 2 2
     // 0 0 2
     // 0 2 2
-    var secondMoveDto = GameFixtures.playMoveDto(builder ->
+    var secondMoveDto = GameFixtures.playDto(builder ->
       builder.withGame(game).withColor(2)
     );
     var secondMove = this.gameService.play(secondMoveDto);
@@ -287,7 +287,7 @@ class GameServiceTests extends AbstractServiceTests {
     // 1 1 1
     // 0 0 1
     // 0 1 1
-    var thirdMoveDto = GameFixtures.playMoveDto(builder ->
+    var thirdMoveDto = GameFixtures.playDto(builder ->
       builder.withGame(game).withColor(1)
     );
     var thirdMove = this.gameService.play(thirdMoveDto);

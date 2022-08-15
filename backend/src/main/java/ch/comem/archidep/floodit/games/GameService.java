@@ -3,7 +3,7 @@ package ch.comem.archidep.floodit.games;
 import ch.comem.archidep.floodit.games.data.CreateGameDto;
 import ch.comem.archidep.floodit.games.data.CreatedGameDto;
 import ch.comem.archidep.floodit.games.data.MoveDto;
-import ch.comem.archidep.floodit.games.data.PlayMoveDto;
+import ch.comem.archidep.floodit.games.data.PlayDto;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +39,7 @@ public class GameService {
     return createdGame.toCreatedDto();
   }
 
-  public MoveDto play(PlayMoveDto dto) {
+  public MoveDto play(PlayDto dto) {
     var game = this.loadGame(dto.gameId());
 
     var board = game.buildCurrentBoard();

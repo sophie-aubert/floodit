@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import ch.comem.archidep.floodit.FloodItRoutes;
-import ch.comem.archidep.floodit.games.data.PlayMoveDto;
+import ch.comem.archidep.floodit.games.data.PlayDto;
 import ch.comem.archidep.floodit.utils.AbstractControllerTests;
 import java.util.Optional;
 import org.junit.jupiter.api.AfterEach;
@@ -35,10 +35,10 @@ class MoveControllerTests extends AbstractControllerTests {
 
   @Test
   void play_a_move() throws Exception {
-    var requestBody = GameFixtures.playMoveDto();
+    var requestBody = GameFixtures.playDto();
 
     var result = GameFixtures.moveDto();
-    when(this.gameService.play(any(PlayMoveDto.class))).thenReturn(result);
+    when(this.gameService.play(any(PlayDto.class))).thenReturn(result);
 
     var game = GameFixtures.newGame(builder ->
       builder.withId(requestBody.gameId())
@@ -50,12 +50,11 @@ class MoveControllerTests extends AbstractControllerTests {
       .andExpect(status().isCreated())
       .andExpect(content().json(serialize(result)));
 
-    verify(this.gameService, times(1)).play(any(PlayMoveDto.class));
+    verify(this.gameService, times(1)).play(any(PlayDto.class));
   }
 
-  private MockHttpServletRequestBuilder playMoveRequest(
-    PlayMoveDto requestBody
-  ) throws Exception {
+  private MockHttpServletRequestBuilder playMoveRequest(PlayDto requestBody)
+    throws Exception {
     return post(FloodItRoutes.MOVES).content(serialize(requestBody));
   }
 }
