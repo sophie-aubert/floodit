@@ -1,2 +1,14 @@
-Game by {{ game.playerName }} created on
-{{ game.createdAt.toLocaleString(DateTime.DATETIME_FULL) }}
+<h1>
+  Game by {{ game.playerName }} created on
+  {{ DateTime.fromISO(game.createdAt).toLocaleString(DateTime.DATETIME_FULL) }}
+</h1>
+
+<table>
+  <tbody>
+    <tr *ngFor="let column of board.positions">
+      <td *ngFor="let row of column">
+        {{ row }}
+      </td>
+    </tr>
+  </tbody>
+</table>

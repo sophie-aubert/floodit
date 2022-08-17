@@ -115,12 +115,7 @@ public class Game {
   }
 
   public Board buildCurrentBoard() {
-    var board = new Board(
-      this.boardWidth,
-      this.boardHeight,
-      this.numberOfColors,
-      this.seed
-    );
+    var board = this.buildInitialBoard();
 
     for (var move : this.moves) {
       board.flood(move.getColor());
@@ -230,5 +225,14 @@ public class Game {
 
   public Long getVersion() {
     return version;
+  }
+
+  private Board buildInitialBoard() {
+    return new Board(
+      this.boardWidth,
+      this.boardHeight,
+      this.numberOfColors,
+      this.seed
+    );
   }
 }

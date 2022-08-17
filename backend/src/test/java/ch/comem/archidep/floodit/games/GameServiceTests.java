@@ -23,6 +23,7 @@ import ch.comem.archidep.floodit.games.data.GameDto;
 import ch.comem.archidep.floodit.utils.AbstractServiceTests;
 import ch.comem.archidep.floodit.utils.TestUtils;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -187,6 +188,43 @@ class GameServiceTests extends AbstractServiceTests {
       ResponseStatusException.class,
       () -> {
         this.gameService.getGame(nonExistentId);
+      }
+    );
+
+    assertThat(exception.getStatus(), is(HttpStatus.NOT_FOUND));
+  }
+
+  @Test
+  void get_the_board_of_a_game() {
+    var game =
+      this.gameFixtures.game(builder ->
+          builder
+            .withBoardWidth(3)
+            .withBoardHeight(3)
+            .withNumberOfColors(3)
+            .withSeed(42)
+        );
+
+    var result = this.gameService.getGameBoard(game.getId());
+
+    // 2 2 2
+    // 0 0 2
+    // 0 1 1
+    assertThat(
+      result,
+      is(equalTo(List.of(List.of(2, 2, 2), List.of(0, 0, 2), List.of(0, 1, 1))))
+    );
+  }
+
+  @Test
+  void cannot_get_the_board_of_a_non_existent_game() {
+    var game = this.gameFixtures.game();
+    var nonExistentId = game.getId() + 1;
+
+    var exception = assertThrows(
+      ResponseStatusException.class,
+      () -> {
+        this.gameService.getGameBoard(nonExistentId);
       }
     );
 

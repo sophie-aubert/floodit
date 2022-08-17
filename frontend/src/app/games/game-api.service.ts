@@ -20,4 +20,8 @@ export class GameApiService {
   loadGame$(id: number): Observable<Game> {
     return this.http.get<Game>(`/api/games/${id}`);
   }
+
+  loadGameBoard$(id: number): Observable<Array<Array<number>>> {
+    return this.http.get<Array<Array<number>>>(`/api/games/${id}/board`);
+  }
 }

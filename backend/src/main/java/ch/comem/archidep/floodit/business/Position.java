@@ -1,12 +1,17 @@
 package ch.comem.archidep.floodit.business;
 
 import ch.comem.archidep.floodit.utils.ObjectUtils;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+@JsonFormat(shape = Shape.ARRAY)
+@JsonPropertyOrder({ "column", "row" })
 public class Position {
 
   public static Position at(int column, int row) {

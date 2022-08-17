@@ -68,6 +68,19 @@ public class Board {
     return this.colors[0].length;
   }
 
+  public int getColor(Position position) {
+    if (
+      position.getColumn() >= this.getWidth() ||
+      position.getRow() >= this.getHeight()
+    ) {
+      throw new IllegalArgumentException(
+        String.format("Position %s is outside board %s", position, this)
+      );
+    }
+
+    return this.colors[position.getColumn()][position.getRow()];
+  }
+
   public boolean isOneColor() {
     var color = this.colors[0][0];
 
@@ -118,10 +131,6 @@ public class Board {
       .append("height", this.getHeight())
       .append("numberOfColors", this.numberOfColors)
       .build();
-  }
-
-  private int getColor(Position position) {
-    return this.colors[position.getColumn()][position.getRow()];
   }
 
   private void findAdjacentPositionsWithTheSameColor(

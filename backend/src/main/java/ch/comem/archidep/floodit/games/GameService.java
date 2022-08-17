@@ -1,11 +1,15 @@
 package ch.comem.archidep.floodit.games;
 
+import ch.comem.archidep.floodit.business.Board;
+import ch.comem.archidep.floodit.business.Position;
 import ch.comem.archidep.floodit.games.data.CreateGameDto;
 import ch.comem.archidep.floodit.games.data.CreatedGameDto;
 import ch.comem.archidep.floodit.games.data.GameDto;
 import ch.comem.archidep.floodit.games.data.MoveDto;
 import ch.comem.archidep.floodit.games.data.PlayDto;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +55,15 @@ public class GameService {
       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
   }
 
+  public List<List<Integer>> getGameBoard(long id) {
+    return this.gameRepository.findById(id)
+      .map(game -> {
+        var board = game.buildCurrentBoard();
+        return this.generateBoard(board);
+      })
+      .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+  }
+
   public MoveDto play(PlayDto dto) {
     var game = this.loadGame(dto.gameId());
 
@@ -76,6 +89,20 @@ public class GameService {
     LOGGER.info("Created move {} for game {}", createdMove, game);
 
     return createdMove.toDto(flooded, newState);
+  }
+
+  private List<List<Integer>> generateBoard(Board board) {
+    return IntStream
+      .range(0, board.getHeight())
+      .mapToObj(row -> this.generateRow(board, row))
+      .toList();
+  }
+
+  private List<Integer> generateRow(Board board, int row) {
+    return IntStream
+      .range(0, board.getWidth())
+      .mapToObj(column -> board.getColor(Position.at(column, row)))
+      .collect(Collectors.toList());
   }
 
   private Game loadGame(Long gameId) {

@@ -38,8 +38,13 @@ public class GameController {
     return this.gameService.listRecentGames();
   }
 
-  @GetMapping(FloodItRoutes.Params.GAME_ID)
+  @GetMapping(FloodItRoutes.Segments.GAME_ID)
   public GameDto getGame(@PathVariable long gameId) {
     return this.gameService.getGame(gameId);
+  }
+
+  @GetMapping(FloodItRoutes.Segments.GAME_ID + FloodItRoutes.Segments.BOARD)
+  public List<List<Integer>> getGameBoard(@PathVariable long gameId) {
+    return this.gameService.getGameBoard(gameId);
   }
 }
