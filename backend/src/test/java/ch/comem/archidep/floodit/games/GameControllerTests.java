@@ -51,11 +51,23 @@ class GameControllerTests extends AbstractControllerTests {
     var result = Generate.randomListOf(GameFixtures::gameDto, 3);
     when(this.gameService.listRecentGames()).thenReturn(result);
 
-    perform(listRecentGames())
+    perform(listRecentGamesRequest())
       .andExpect(status().isOk())
       .andExpect(content().json(serialize(result)));
 
     verify(this.gameService, times(1)).listRecentGames();
+  }
+
+  @Test
+  void get_a_game() throws Exception {
+    var result = GameFixtures.gameDto();
+    when(this.gameService.getGame(result.getId())).thenReturn(result);
+
+    perform(getGameRequest(result.getId()))
+      .andExpect(status().isOk())
+      .andExpect(content().json(serialize(result)));
+
+    verify(this.gameService, times(1)).getGame(result.getId());
   }
 
   private MockHttpServletRequestBuilder createGameRequest(
@@ -64,7 +76,13 @@ class GameControllerTests extends AbstractControllerTests {
     return post(FloodItRoutes.GAMES).content(serialize(requestBody));
   }
 
-  private MockHttpServletRequestBuilder listRecentGames() throws Exception {
+  private MockHttpServletRequestBuilder listRecentGamesRequest()
+    throws Exception {
     return get(FloodItRoutes.GAMES);
+  }
+
+  private MockHttpServletRequestBuilder getGameRequest(long gameId)
+    throws Exception {
+    return get(FloodItRoutes.GAME, gameId);
   }
 }

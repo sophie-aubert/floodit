@@ -16,4 +16,8 @@ export class GameApiService {
   listGames$(): Observable<Game[]> {
     return this.http.get<Game[]>('/api/games');
   }
+
+  loadGame$(id: number): Observable<Game> {
+    return this.http.get<Game>(`/api/games/${id}`);
+  }
 }

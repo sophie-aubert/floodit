@@ -6,12 +6,13 @@ import ch.comem.archidep.floodit.games.data.GameDto;
 import ch.comem.archidep.floodit.games.data.MoveDto;
 import ch.comem.archidep.floodit.games.data.PlayDto;
 import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @Transactional
@@ -20,10 +21,6 @@ public class GameService {
   private static final Logger LOGGER = LoggerFactory.getLogger(
     GameService.class
   );
-
-  public static GameException gameNotFound(long gameId) {
-    throw new GameException(GameErrorCode.GAME_NOT_FOUND, Map.of("id", gameId));
-  }
 
   @Autowired
   private GameRepository gameRepository;
@@ -46,6 +43,12 @@ public class GameService {
       .stream()
       .map(Game::toDto)
       .toList();
+  }
+
+  public GameDto getGame(long id) {
+    return this.gameRepository.findById(id)
+      .map(Game::toDto)
+      .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
   }
 
   public MoveDto play(PlayDto dto) {
@@ -77,6 +80,13 @@ public class GameService {
 
   private Game loadGame(Long gameId) {
     return this.gameRepository.findById(gameId)
-      .orElseThrow(() -> GameService.gameNotFound(gameId));
+      .orElseThrow(() ->
+        new IllegalStateException(
+          String.format(
+            "Could not find game with ID %s in the database",
+            gameId
+          )
+        )
+      );
   }
 }

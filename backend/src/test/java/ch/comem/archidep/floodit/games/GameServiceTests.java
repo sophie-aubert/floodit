@@ -15,6 +15,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.Assert.assertThrows;
 
 import ch.comem.archidep.floodit.business.Position;
 import ch.comem.archidep.floodit.games.data.CreateGameDto;
@@ -25,6 +26,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 class GameServiceTests extends AbstractServiceTests {
 
@@ -164,6 +167,30 @@ class GameServiceTests extends AbstractServiceTests {
         gamePlayedOneWeekAgo.getId()
       )
     );
+  }
+
+  @Test
+  void get_a_game() {
+    var game = this.gameFixtures.game();
+
+    var result = this.gameService.getGame(game.getId());
+
+    assertThat(result.getId(), is(equalTo(game.getId())));
+  }
+
+  @Test
+  void cannot_get_a_non_existent_game() {
+    var game = this.gameFixtures.game();
+    var nonExistentId = game.getId() + 1;
+
+    var exception = assertThrows(
+      ResponseStatusException.class,
+      () -> {
+        this.gameService.getGame(nonExistentId);
+      }
+    );
+
+    assertThat(exception.getStatus(), is(HttpStatus.NOT_FOUND));
   }
 
   @Test

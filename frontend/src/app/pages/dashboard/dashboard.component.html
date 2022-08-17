@@ -1,12 +1,20 @@
-<p *ngIf="!games"><em>Loading...</em></p>
+<ng-container *ngIf="gameService.games$ | async as games">
+  <p *ngIf="games.state === 'loading'"><em>Loading...</em></p>
 
-<ul *ngIf="games?.length !== 0">
-  <li *ngFor="let game of games">
-    Game by {{ game.playerName }} created on
-    {{ game.createdAt.toLocaleString(DateTime.DATETIME_FULL) }}
-  </li>
-</ul>
+  <ng-container
+    *ngIf="games.state === 'loaded' || games.state === 'refreshing'"
+  >
+    <ul *ngIf="games.data.length !== 0">
+      <li *ngFor="let game of games.data">
+        Game by {{ game.playerName }} created on
+        {{ game.createdAt.toLocaleString(DateTime.DATETIME_FULL) }}
+      </li>
+    </ul>
 
-<p *ngIf="games?.length === 0"><em>No one has played yet.</em></p>
+    <p *ngIf="games.data.length === 0"><em>No one has played yet.</em></p>
+  </ng-container>
+
+  <p *ngIf="games.state === 'error'"><em>Error: could not load games.</em></p>
+</ng-container>
 
 <button type="button" (click)="createGame()">Start game</button>
