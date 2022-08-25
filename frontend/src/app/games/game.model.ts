@@ -20,34 +20,25 @@ export interface Game extends CreateGameParams {
   readonly boardHeight: number;
   readonly numberOfColors: number;
   readonly maxMoves: number;
-  readonly moves: Move[];
+  readonly moves: ReadonlyArray<Move>;
   readonly createdAt: string;
   readonly updatedAt: string;
-}
-
-export interface Move {
-  readonly id: number;
-  readonly color: number;
-  readonly flooded: number[];
-  readonly position: [number, number];
-  readonly gameState: GameState;
-  readonly createdAt: string;
 }
 
 export interface CreatedGame extends Game {
   readonly secret: string;
 }
 
-export class Board {
-  readonly positions: ReadonlyArray<ReadonlyArray<number>>;
-
-  constructor(game: Game) {
-    this.positions = Array(game.boardHeight)
-      .fill(0)
-      .map((_rowValue, row) =>
-        Array(game.boardWidth)
-          .fill(0)
-          .map((_columnValue, column) => column * row)
-      );
-  }
+export interface Move {
+  readonly id: number;
+  readonly color: number;
+  readonly flooded: [number, number][];
+  readonly position: [number, number];
+  readonly gameState: GameState;
+  readonly createdAt: string;
 }
+
+export type PlayParams = {
+  readonly gameId: number;
+  readonly color: number;
+};

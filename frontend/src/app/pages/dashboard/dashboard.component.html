@@ -1,24 +1,26 @@
-<ng-container *ngIf="gameService.games$ | async as games">
-  <p *ngIf="games.state === 'loading'"><em>Loading...</em></p>
+<app-remote-data [remoteData]="games$ | async">
+  <ng-template #loading>
+    <p><em>Loading...</em></p>
+  </ng-template>
 
-  <ng-container
-    *ngIf="games.state === 'loaded' || games.state === 'refreshing'"
-  >
-    <ul *ngIf="games.data.length !== 0">
-      <li *ngFor="let game of games.data">
-        Game by {{ game.playerName }} created on
-        {{
-          DateTime.fromISO(game.createdAt).toLocaleString(
-            DateTime.DATETIME_FULL
-          )
-        }}
-      </li>
-    </ul>
+  <ng-template #loaded let-games>
+    <ng-container *ngIf="asGames(games) as games">
+      <ul *ngIf="games.length !== 0">
+        <li *ngFor="let game of games">
+          Game by {{ game.playerName }} created on
+          {{
+            DateTime.fromISO(game.createdAt).toLocaleString(
+              DateTime.DATETIME_FULL
+            )
+          }}
+        </li>
+      </ul>
 
-    <p *ngIf="games.data.length === 0"><em>No one has played yet.</em></p>
-  </ng-container>
-
-  <p *ngIf="games.state === 'error'"><em>Error: could not load games.</em></p>
-</ng-container>
+      <p *ngIf="games.length === 0">
+        <em>No one has played yet.</em>
+      </p></ng-container
+    >
+  </ng-template>
+</app-remote-data>
 
 <button type="button" (click)="createGame()">Start game</button>

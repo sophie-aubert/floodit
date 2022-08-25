@@ -5,13 +5,18 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { CurrentGameComponent } from './pages/current-game/current-game.component';
-import { RouterModule } from '@angular/router';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { RemoteDataComponent } from './utils/remote-data/remote-data.component';
 
 @NgModule({
   bootstrap: [AppComponent],
-  declarations: [AppComponent, DashboardComponent, CurrentGameComponent],
+  declarations: [
+    AppComponent,
+    DashboardComponent,
+    CurrentGameComponent,
+    RemoteDataComponent
+  ],
   imports: [AppRoutingModule, BrowserModule, CommonModule, HttpClientModule],
   providers: []
 })

@@ -3,6 +3,7 @@ package ch.comem.archidep.floodit.business;
 import ch.comem.archidep.floodit.utils.ObjectUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.HashSet;
 import java.util.Set;
@@ -44,6 +45,7 @@ public class Position {
     return row;
   }
 
+  @JsonIgnore
   public Set<Position> getAdjacentPositions() {
     var adjacentPositions = new HashSet<Position>();
     adjacentPositions.add(Position.at(this.column + 1, this.row));

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { BehaviorSubject, map, Observable, Subject, tap } from 'rxjs';
-import { RemoteData } from '../utils/data';
+import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
+import { NavigationService } from '../navigation.service';
 import { GameApiService } from './game-api.service';
-import { CreateGameParams, Game } from './game.model';
+import { colors } from './game.constants';
+import { CreateGameParams, Game, Move, PlayParams } from './game.model';
 
 const storageKey = 'floodit.game';
 
@@ -14,72 +14,88 @@ type LocalGameData = {
   };
 };
 
+export type CurrentGame = {
+  readonly game: Game;
+  readonly board: string[][];
+};
+
 @Injectable({
   providedIn: 'root'
 })
 export class GameService {
-  readonly currentGame$: Observable<RemoteData<Game>>;
-  readonly games$: Observable<RemoteData<Game[]>>;
-
-  #currentGame$: Subject<RemoteData<Game>>;
-  #games$: Subject<RemoteData<Game[]>>;
-
   constructor(
     private readonly gameApi: GameApiService,
-    private readonly router: Router
-  ) {
-    this.#currentGame$ = new BehaviorSubject<RemoteData<Game>>({
-      state: 'notLoaded'
-    });
-    this.currentGame$ = this.#currentGame$.asObservable();
+    private readonly navigationService: NavigationService
+  ) {}
 
-    this.#games$ = new BehaviorSubject<RemoteData<Game[]>>({
-      state: 'notLoaded'
-    });
-    this.games$ = this.#games$.asObservable();
+  continueCurrentGame(): boolean {
+    const localGameData = this.#loadLocalGameData();
+    if (localGameData === undefined) {
+      return false;
+    }
 
-    this.#loadCurrentGameIfAny();
+    this.navigationService.goToCurrentGame();
+    return true;
   }
 
-  loadGames(): void {
-    this.#games$.next({ state: 'loading' });
-    this.gameApi.listGames$().subscribe({
-      next: data => this.#games$.next({ state: 'loaded', data }),
-      error: error => this.#games$.next({ state: 'error', error })
-    });
-  }
-
-  startGame$(params: CreateGameParams): Observable<void> {
+  startGame$(params: CreateGameParams): Observable<CurrentGame> {
     return this.gameApi.createGame$(params).pipe(
-      tap(createdGame => {
-        this.#currentGame$.next({ state: 'loaded', data: createdGame });
+      switchMap(createdGame => {
         this.#saveLocalGameData({
           currentGame: { id: createdGame.id, secret: createdGame.secret }
         });
-        this.#goToCurrentGame();
-      }),
-      map(() => undefined)
+
+        return this.gameApi.loadGameBoard$(createdGame.id).pipe(
+          map(board => ({
+            game: createdGame,
+            board: board.map(row => row.map(color => colors[color]))
+          }))
+        );
+      })
     );
   }
 
-  #loadCurrentGameIfAny() {
+  play$(currentGame: CurrentGame, color: number): Observable<CurrentGame> {
+    return this.gameApi.play$({ gameId: currentGame.game.id, color }).pipe(
+      map(move => {
+        const newGame: Game = {
+          ...currentGame.game,
+          moves: [...currentGame.game.moves, move]
+        };
+
+        const newBoard = currentGame.board.slice().map(row => row.slice());
+
+        for (const currentMove of newGame.moves) {
+          for (const [col, row] of currentMove.flooded) {
+            newBoard[col][row] = colors[color];
+          }
+        }
+
+        return {
+          game: newGame,
+          board: newBoard
+        };
+      })
+    );
+  }
+
+  loadCurrentGame$(): Observable<CurrentGame | undefined> {
     const localGameData = this.#loadLocalGameData();
 
     const currentGame = localGameData?.currentGame;
-    if (currentGame !== undefined) {
-      this.#currentGame$.next({ state: 'loading' });
-      this.gameApi.loadGame$(currentGame.id).subscribe({
-        next: data => {
-          this.#currentGame$.next({ state: 'loaded', data });
-          this.#goToCurrentGame();
-        },
-        error: error => this.#currentGame$.next({ state: 'error', error })
-      });
+    if (currentGame === undefined) {
+      return of(undefined);
     }
-  }
 
-  #goToCurrentGame() {
-    this.router.navigate(['/game']);
+    return forkJoin([
+      this.gameApi.loadGame$(currentGame.id),
+      this.gameApi.loadGameBoard$(currentGame.id)
+    ]).pipe(
+      map(([game, board]) => ({
+        game,
+        board: board.map(row => row.map(color => colors[color]))
+      }))
+    );
   }
 
   #saveLocalGameData(data: LocalGameData): void {

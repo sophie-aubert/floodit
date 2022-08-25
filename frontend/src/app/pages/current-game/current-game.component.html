@@ -1,14 +1,39 @@
-<h1>
-  Game by {{ game.playerName }} created on
-  {{ DateTime.fromISO(game.createdAt).toLocaleString(DateTime.DATETIME_FULL) }}
-</h1>
+<ng-container *ngIf="state$ | async as state">
+  <ng-container *ngIf="state.name === CurrentGameState.Playing">
+    <h1>
+      Game by {{ state.game.playerName }} created on
+      {{
+        DateTime.fromISO(state.game.createdAt).toLocaleString(
+          DateTime.DATETIME_FULL
+        )
+      }}
+    </h1>
 
-<table>
-  <tbody>
-    <tr *ngFor="let column of board.positions">
-      <td *ngFor="let row of column">
-        {{ row }}
-      </td>
-    </tr>
-  </tbody>
-</table>
+    <table>
+      <caption class="sr-only">
+        Game board
+      </caption>
+
+      <tbody>
+        <tr *ngFor="let row of state.board">
+          <td
+            *ngFor="let color of row"
+            class="w-5 h-5"
+            [style.background-color]="color"
+          ></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <ul class="flex mt-3">
+      <li *ngFor="let color of state.playableColors; index as i">
+        <button
+          type="button"
+          (click)="play(i)"
+          class="w-5 h-5"
+          [style.background-color]="color"
+        ></button>
+      </li>
+    </ul>
+  </ng-container>
+</ng-container>
