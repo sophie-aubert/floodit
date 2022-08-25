@@ -67,7 +67,7 @@ export class GameService {
 
         for (const currentMove of newGame.moves) {
           for (const [col, row] of currentMove.flooded) {
-            newBoard[col][row] = colors[color];
+            newBoard[row][col] = colors[color];
           }
         }
 
