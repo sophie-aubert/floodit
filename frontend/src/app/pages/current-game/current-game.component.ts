@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DateTime } from 'luxon';
 import { BehaviorSubject, filter, first, Observable, switchMap } from 'rxjs';
 import { colors } from 'src/app/games/game.constants';
-import { Game } from 'src/app/games/game.model';
+import { Game, GameState } from 'src/app/games/game.model';
 import { CurrentGame, GameService } from 'src/app/games/game.service';
 import { NavigationService } from 'src/app/navigation.service';
 
@@ -33,6 +33,7 @@ export class CurrentGameComponent implements OnInit {
   readonly state$: Observable<State>;
   readonly CurrentGameState = CurrentGameState;
   readonly DateTime = DateTime;
+  readonly GameState = GameState;
 
   readonly #state$: BehaviorSubject<State>;
 
@@ -66,6 +67,10 @@ export class CurrentGameComponent implements OnInit {
         )
       )
       .subscribe(currentGame => this.#setCurrentGame(currentGame));
+  }
+
+  playAnotherGame(): void {
+    this.gameService.stopCurrentGame();
   }
 
   #setCurrentGame(currentGame: CurrentGame) {

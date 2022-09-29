@@ -25,15 +25,37 @@
       </tbody>
     </table>
 
-    <ul class="flex mt-3">
-      <li *ngFor="let color of state.playableColors; index as i">
-        <button
-          type="button"
-          (click)="play(i)"
-          class="w-5 h-5"
-          [style.background-color]="color"
-        ></button>
-      </li>
-    </ul>
+    <div class="flex flex-row items-center gap-x-2">
+      <ul *ngIf="state.game.state === GameState.Ongoing" class="flex mt-3">
+        <li *ngFor="let color of state.playableColors; index as i">
+          <button
+            type="button"
+            (click)="play(i)"
+            class="w-5 h-5"
+            [style.background-color]="color"
+          ></button>
+        </li>
+      </ul>
+
+      <span>
+        {{ state.game.maxMoves - state.game.moves.length }} moves left
+      </span>
+    </div>
+
+    <p *ngIf="state.game.state === GameState.Win" class="text-green-500">
+      You have won!
+    </p>
+
+    <p *ngIf="state.game.state === GameState.Loss" class="text-red-500">
+      You have lost...
+    </p>
+
+    <button
+      *ngIf="state.game.state !== GameState.Ongoing"
+      type="button"
+      (click)="playAnotherGame()"
+    >
+      Play again
+    </button>
   </ng-container>
 </ng-container>

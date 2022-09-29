@@ -60,6 +60,7 @@ export class GameService {
       map(move => {
         const newGame: Game = {
           ...currentGame.game,
+          state: move.gameState,
           moves: [...currentGame.game.moves, move]
         };
 
@@ -98,6 +99,10 @@ export class GameService {
     );
   }
 
+  stopCurrentGame(): void {
+    this.#deleteLocalGameData();
+  }
+
   #saveLocalGameData(data: LocalGameData): void {
     localStorage.setItem(storageKey, JSON.stringify(data));
   }
@@ -107,5 +112,10 @@ export class GameService {
     return storedData === null
       ? undefined
       : (JSON.parse(storedData) as LocalGameData);
+  }
+
+  #deleteLocalGameData(): void {
+    localStorage.removeItem(storageKey);
+    this.navigationService.goToDashboard();
   }
 }
