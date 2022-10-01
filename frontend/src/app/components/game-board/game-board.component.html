@@ -4,11 +4,11 @@
   </caption>
 
   <tbody>
-    <tr *ngFor="let row of board">
+    <tr *ngFor="let row of boardColors">
       <td
         *ngFor="let color of row"
         class="w-5 h-5"
-        [style.background-color]="palette[color]"
+        [style.background-color]="color"
       ></td>
     </tr>
   </tbody>
