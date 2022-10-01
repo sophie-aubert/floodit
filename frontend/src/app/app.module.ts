@@ -5,9 +5,12 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { LayoutComponent } from './layout/layout.component';
+import { NavbarComponent } from './layout/navbar/navbar.component';
 import { CurrentGameComponent } from './pages/current-game/current-game.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { RemoteDataComponent } from './utils/remote-data/remote-data.component';
+import { NewGameCardComponent } from './pages/dashboard/new-game-card/new-game-card.component';
+import { PreviousGamesComponent } from './pages/dashboard/previous-games/previous-games.component';
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -15,7 +18,10 @@ import { RemoteDataComponent } from './utils/remote-data/remote-data.component';
     AppComponent,
     DashboardComponent,
     CurrentGameComponent,
-    RemoteDataComponent
+    LayoutComponent,
+    NavbarComponent,
+    NewGameCardComponent,
+    PreviousGamesComponent
   ],
   imports: [AppRoutingModule, BrowserModule, CommonModule, HttpClientModule],
   providers: []

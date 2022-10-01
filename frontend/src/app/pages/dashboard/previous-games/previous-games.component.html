@@ -1,0 +1,37 @@
+<table class="table table-zebra w-full">
+  <caption class="mb-5 text-left text-2xl font-bold">
+    Previous games
+  </caption>
+  <thead>
+    <tr>
+      <th>Player</th>
+      <th>Date</th>
+      <th>Outcome</th>
+      <th>Moves</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let game of games">
+      <td>{{ game.playerName }}</td>
+      <td>
+        {{
+          DateTime.fromISO(game.createdAt).toLocaleString(
+            DateTime.DATETIME_FULL
+          )
+        }}
+      </td>
+      <td>
+        <em *ngIf="game.state === GameState.Ongoing" class="text-warning">
+          Ongoing
+        </em>
+        <span *ngIf="game.state === GameState.Win" class="text-success">
+          Win
+        </span>
+        <span *ngIf="game.state === GameState.Loss" class="text-error">
+          Loss
+        </span>
+      </td>
+      <td>{{ game.moves.length }}/{{ game.maxMoves }}</td>
+    </tr>
+  </tbody>
+</table>

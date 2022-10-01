@@ -1,26 +1,37 @@
-<app-remote-data [remoteData]="games$ | async">
-  <ng-template #loading>
-    <p><em>Loading...</em></p>
-  </ng-template>
+<section>
+  <div class="grid grid-cols-3 gap-x-5">
+    <app-new-game-card
+      title="Easy"
+      description="When you like to win effortlessly."
+      cardClass="bg-success"
+      [boardWidth]="4"
+      [boardHeight]="4"
+      [numberOfColors]="4"
+      [maxMoves]="10"
+    ></app-new-game-card>
 
-  <ng-template #loaded let-games>
-    <ng-container *ngIf="asGames(games) as games">
-      <ul *ngIf="games.length !== 0">
-        <li *ngFor="let game of games">
-          Game by {{ game.playerName }} created on
-          {{
-            DateTime.fromISO(game.createdAt).toLocaleString(
-              DateTime.DATETIME_FULL
-            )
-          }}
-        </li>
-      </ul>
+    <app-new-game-card
+      title="Medium"
+      description="You will be challenged."
+      cardClass="bg-warning"
+      [boardWidth]="10"
+      [boardHeight]="10"
+      [numberOfColors]="10"
+      [maxMoves]="14"
+    ></app-new-game-card>
 
-      <p *ngIf="games.length === 0">
-        <em>No one has played yet.</em>
-      </p></ng-container
-    >
-  </ng-template>
-</app-remote-data>
+    <app-new-game-card
+      title="Hard"
+      description="This probably isn't even possible."
+      cardClass="bg-error"
+      [boardWidth]="14"
+      [boardHeight]="14"
+      [numberOfColors]="10"
+      [maxMoves]="14"
+    ></app-new-game-card>
+  </div>
+</section>
 
-<button type="button" (click)="createGame()">Start game</button>
+<section class="mt-10">
+  <app-previous-games></app-previous-games>
+</section>
