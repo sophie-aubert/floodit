@@ -4,6 +4,7 @@ import ch.comem.archidep.floodit.business.Board;
 import ch.comem.archidep.floodit.games.data.CreateGameDto;
 import ch.comem.archidep.floodit.games.data.CreatedGameDto;
 import ch.comem.archidep.floodit.games.data.GameDto;
+import ch.comem.archidep.floodit.games.data.MoveDto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -125,6 +126,16 @@ public class Game {
   }
 
   public GameDto toDto() {
+    var board = this.buildInitialBoard();
+
+    var moveDtos = new ArrayList<MoveDto>(this.moves.size());
+
+    var n = this.moves.size();
+    for (var i = 0; i < n; i++) {
+      var move = this.moves.get(i);
+      moveDtos.add(GameService.play(board, move, i + 1, this.maxMoves));
+    }
+
     return new GameDto(
       this.id,
       this.state,
@@ -133,7 +144,7 @@ public class Game {
       this.boardHeight,
       this.numberOfColors,
       this.maxMoves,
-      new ArrayList<>(),
+      moveDtos,
       this.createdAt,
       this.updatedAt
     );

@@ -68,27 +68,38 @@ public class GameService {
     var game = this.loadGame(dto.gameId());
 
     var board = game.buildCurrentBoard();
-    var flooded = board.flood(dto.color());
-
-    var newState = GameState.ONGOING;
-    if (board.isOneColor()) {
-      newState = GameState.WIN;
-    } else if (game.getMoves().size() + 1 == game.getMaxMoves()) {
-      newState = GameState.LOSS;
-    }
 
     var newMove = new Move(game, dto.color());
     game.getMoves().add(newMove);
 
     var createdMove = this.moveRepository.saveAndFlush(newMove);
+    var createdMoveDto = play(
+      board,
+      createdMove,
+      game.getMoves().size(),
+      game.getMaxMoves()
+    );
 
-    game.setState(newState);
+    game.setState(createdMoveDto.gameState());
     game.touch();
     this.gameRepository.saveAndFlush(game);
 
     LOGGER.info("Created move {} for game {}", createdMove, game);
 
-    return createdMove.toDto(flooded, newState);
+    return createdMoveDto;
+  }
+
+  public static MoveDto play(Board board, Move move, int n, int maxMoves) {
+    var flooded = board.flood(move.getColor());
+
+    var newState = GameState.ONGOING;
+    if (board.isOneColor()) {
+      newState = GameState.WIN;
+    } else if (n == maxMoves) {
+      newState = GameState.LOSS;
+    }
+
+    return move.toDto(flooded, newState);
   }
 
   private List<List<Integer>> generateBoard(Board board) {
