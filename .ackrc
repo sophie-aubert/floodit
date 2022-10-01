@@ -1,0 +1,9 @@
+# https://beyondgrep.com
+--ignore-dir=backend/coverage
+--ignore-dir=backend/node_modules
+--ignore-dir=backend/target
+--ignore-dir=frontend/.angular
+--ignore-dir=frontend/dist
+--ignore-dir=frontend/node_modules
+--ignore-dir=node_modules
+--ignore-dir=tmp
