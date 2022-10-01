@@ -1,7 +1,7 @@
 package ch.comem.archidep.floodit.games.data;
 
-import ch.comem.archidep.floodit.business.Position;
 import ch.comem.archidep.floodit.games.GameState;
+import ch.comem.archidep.floodit.rules.Position;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;

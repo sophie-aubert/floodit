@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
@@ -31,7 +31,11 @@ export class GameApiService {
     return this.http.get<Array<Array<number>>>(`/api/games/${id}/board`);
   }
 
-  play$({ gameId, color }: PlayParams): Observable<Move> {
-    return this.http.post<Move>('/api/moves', { gameId, color });
+  play$({ gameId, color, secret }: PlayParams): Observable<Move> {
+    return this.http.post<Move>(
+      '/api/moves',
+      { gameId, color },
+      { headers: new HttpHeaders().set('Authorization', `Bearer ${secret}`) }
+    );
   }
 }

@@ -4,6 +4,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 
+import ch.comem.archidep.floodit.rules.Board;
+import ch.comem.archidep.floodit.rules.Position;
 import org.junit.jupiter.api.Test;
 
 class BoardTests {

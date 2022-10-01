@@ -1,10 +1,10 @@
 package ch.comem.archidep.floodit.games;
 
-import ch.comem.archidep.floodit.business.Board;
 import ch.comem.archidep.floodit.games.data.CreateGameDto;
 import ch.comem.archidep.floodit.games.data.CreatedGameDto;
 import ch.comem.archidep.floodit.games.data.GameDto;
 import ch.comem.archidep.floodit.games.data.MoveDto;
+import ch.comem.archidep.floodit.rules.Board;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

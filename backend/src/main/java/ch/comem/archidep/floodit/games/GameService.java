@@ -1,12 +1,13 @@
 package ch.comem.archidep.floodit.games;
 
-import ch.comem.archidep.floodit.business.Board;
-import ch.comem.archidep.floodit.business.Position;
 import ch.comem.archidep.floodit.games.data.CreateGameDto;
 import ch.comem.archidep.floodit.games.data.CreatedGameDto;
 import ch.comem.archidep.floodit.games.data.GameDto;
 import ch.comem.archidep.floodit.games.data.MoveDto;
 import ch.comem.archidep.floodit.games.data.PlayDto;
+import ch.comem.archidep.floodit.games.exceptions.GameForbidden;
+import ch.comem.archidep.floodit.rules.Board;
+import ch.comem.archidep.floodit.rules.Position;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -64,8 +65,11 @@ public class GameService {
       .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
   }
 
-  public MoveDto play(PlayDto dto) {
+  public MoveDto play(String authorization, PlayDto dto) {
     var game = this.loadGame(dto.gameId());
+    if (!game.getSecret().equals(authorization)) {
+      throw new GameForbidden(game);
+    }
 
     var board = game.buildCurrentBoard();
 

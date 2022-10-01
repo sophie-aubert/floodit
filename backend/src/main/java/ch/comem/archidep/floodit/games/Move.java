@@ -1,7 +1,7 @@
 package ch.comem.archidep.floodit.games;
 
-import ch.comem.archidep.floodit.business.Position;
 import ch.comem.archidep.floodit.games.data.MoveDto;
+import ch.comem.archidep.floodit.rules.Position;
 import ch.comem.archidep.floodit.utils.ObjectUtils;
 import java.time.LocalDateTime;
 import java.util.Objects;

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { NavigationService } from '../navigation.service';
 import { GameApiService } from './game-api.service';
-import { CreateGameParams, Game } from './game.model';
+import { CreatedGame, CreateGameParams, Game } from './game.model';
 
 const storageKey = 'floodit.game';
 
@@ -14,7 +14,7 @@ type LocalGameData = {
 };
 
 export type CurrentGame = {
-  readonly game: Game;
+  readonly game: CreatedGame;
   readonly board: number[][];
 };
 
@@ -55,28 +55,34 @@ export class GameService {
   }
 
   play$(currentGame: CurrentGame, color: number): Observable<CurrentGame> {
-    return this.gameApi.play$({ gameId: currentGame.game.id, color }).pipe(
-      map(move => {
-        const newGame: Game = {
-          ...currentGame.game,
-          state: move.gameState,
-          moves: [...currentGame.game.moves, move]
-        };
-
-        const newBoard = currentGame.board.slice().map(row => row.slice());
-
-        for (const currentMove of newGame.moves) {
-          for (const [col, row] of currentMove.flooded) {
-            newBoard[row][col] = color;
-          }
-        }
-
-        return {
-          game: newGame,
-          board: newBoard
-        };
+    return this.gameApi
+      .play$({
+        gameId: currentGame.game.id,
+        color,
+        secret: currentGame.game.secret
       })
-    );
+      .pipe(
+        map(move => {
+          const newGame: CreatedGame = {
+            ...currentGame.game,
+            state: move.gameState,
+            moves: [...currentGame.game.moves, move]
+          };
+
+          const newBoard = currentGame.board.slice().map(row => row.slice());
+
+          for (const currentMove of newGame.moves) {
+            for (const [col, row] of currentMove.flooded) {
+              newBoard[row][col] = color;
+            }
+          }
+
+          return {
+            game: newGame,
+            board: newBoard
+          };
+        })
+      );
   }
 
   loadCurrentGame$(): Observable<CurrentGame | undefined> {
@@ -92,7 +98,7 @@ export class GameService {
       this.gameApi.loadGameBoard$(currentGame.id)
     ]).pipe(
       map(([game, board]) => ({
-        game,
+        game: { ...game, secret: currentGame.secret },
         board
       }))
     );

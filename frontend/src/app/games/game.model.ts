@@ -41,4 +41,5 @@ export interface Move {
 export type PlayParams = {
   readonly gameId: number;
   readonly color: number;
+  readonly secret: string;
 };

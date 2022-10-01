@@ -17,9 +17,10 @@ import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertThrows;
 
-import ch.comem.archidep.floodit.business.Position;
 import ch.comem.archidep.floodit.games.data.CreateGameDto;
 import ch.comem.archidep.floodit.games.data.GameDto;
+import ch.comem.archidep.floodit.games.exceptions.GameForbidden;
+import ch.comem.archidep.floodit.rules.Position;
 import ch.comem.archidep.floodit.utils.AbstractServiceTests;
 import ch.comem.archidep.floodit.utils.TestUtils;
 import java.time.LocalDateTime;
@@ -237,7 +238,7 @@ class GameServiceTests extends AbstractServiceTests {
     var dto = GameFixtures.playDto(game);
 
     var now = LocalDateTime.now();
-    var result = this.gameService.play(dto);
+    var result = this.gameService.play(game.getSecret(), dto);
 
     assertThat(result.id(), is(greaterThanOrEqualTo(1L)));
     assertThat(result.color(), is(equalTo(dto.color())));
@@ -306,7 +307,7 @@ class GameServiceTests extends AbstractServiceTests {
     var firstMoveDto = GameFixtures.playDto(builder ->
       builder.withGame(game).withColor(0)
     );
-    var firstMove = this.gameService.play(firstMoveDto);
+    var firstMove = this.gameService.play(game.getSecret(), firstMoveDto);
     assertThat(
       firstMove.flooded(),
       containsInAnyOrder(
@@ -324,7 +325,7 @@ class GameServiceTests extends AbstractServiceTests {
     var secondMoveDto = GameFixtures.playDto(builder ->
       builder.withGame(game).withColor(1)
     );
-    var secondMove = this.gameService.play(secondMoveDto);
+    var secondMove = this.gameService.play(game.getSecret(), secondMoveDto);
     assertThat(
       secondMove.flooded(),
       containsInAnyOrder(
@@ -362,7 +363,7 @@ class GameServiceTests extends AbstractServiceTests {
     var firstMoveDto = GameFixtures.playDto(builder ->
       builder.withGame(game).withColor(1)
     );
-    var firstMove = this.gameService.play(firstMoveDto);
+    var firstMove = this.gameService.play(game.getSecret(), firstMoveDto);
     assertThat(
       firstMove.flooded(),
       containsInAnyOrder(
@@ -380,7 +381,7 @@ class GameServiceTests extends AbstractServiceTests {
     var secondMoveDto = GameFixtures.playDto(builder ->
       builder.withGame(game).withColor(2)
     );
-    var secondMove = this.gameService.play(secondMoveDto);
+    var secondMove = this.gameService.play(game.getSecret(), secondMoveDto);
     assertThat(
       secondMove.flooded(),
       containsInAnyOrder(Position.at(1, 2), Position.at(2, 2))
@@ -393,7 +394,7 @@ class GameServiceTests extends AbstractServiceTests {
     var thirdMoveDto = GameFixtures.playDto(builder ->
       builder.withGame(game).withColor(1)
     );
-    var thirdMove = this.gameService.play(thirdMoveDto);
+    var thirdMove = this.gameService.play(game.getSecret(), thirdMoveDto);
     assertThat(thirdMove.flooded(), is(empty()));
     assertThat(thirdMove.gameState(), is(GameState.LOSS));
 
@@ -401,6 +402,19 @@ class GameServiceTests extends AbstractServiceTests {
       var updatedGame = this.getGame(game);
       assertThat(updatedGame.getState(), is(GameState.LOSS));
     });
+  }
+
+  @Test
+  void cannot_play_without_the_correct_game_secret() {
+    var game = this.gameFixtures.game();
+    var dto = GameFixtures.playDto(game);
+
+    var wrongSecret = game.getSecret() + "foo";
+
+    assertThrows(
+      GameForbidden.class,
+      () -> this.gameService.play(wrongSecret, dto)
+    );
   }
 
   private Game getGame(Game game) {

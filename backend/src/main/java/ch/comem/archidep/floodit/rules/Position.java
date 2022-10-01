@@ -1,4 +1,4 @@
-package ch.comem.archidep.floodit.business;
+package ch.comem.archidep.floodit.rules;
 
 import ch.comem.archidep.floodit.utils.ObjectUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;

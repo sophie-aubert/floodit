@@ -1,4 +1,4 @@
-package ch.comem.archidep.floodit.business;
+package ch.comem.archidep.floodit.rules;
 
 import java.util.HashSet;
 import java.util.Random;
