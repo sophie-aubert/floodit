@@ -60,7 +60,10 @@
               d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
             />
           </svg>
-          <em class="ml-2">The list of games could not be loaded.</em>
+          <em class="ml-2">
+            <strong>Oops...</strong>
+            The list of games could not be loaded.
+          </em>
         </div>
       </td>
     </tr>
@@ -77,9 +80,7 @@
       <td>{{ game.playerName }}</td>
       <td>
         {{
-          DateTime.fromISO(game.createdAt).toLocaleString(
-            DateTime.DATETIME_FULL
-          )
+          DateTime.fromISO(game.createdAt).toLocaleString(DateTime.DATETIME_MED)
         }}
       </td>
       <td>
