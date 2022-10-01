@@ -20,6 +20,7 @@ export class PreviousGamesComponent implements OnInit {
 
   readonly DateTime = DateTime;
   readonly GameState = GameState;
+  readonly State = State;
 
   constructor(private readonly gameApiService: GameApiService) {
     this.games = [];
