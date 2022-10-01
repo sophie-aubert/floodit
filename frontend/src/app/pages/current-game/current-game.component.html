@@ -9,21 +9,7 @@
       }}
     </h1>
 
-    <table>
-      <caption class="sr-only">
-        Game board
-      </caption>
-
-      <tbody>
-        <tr *ngFor="let row of state.board">
-          <td
-            *ngFor="let color of row"
-            class="w-5 h-5"
-            [style.background-color]="color"
-          ></td>
-        </tr>
-      </tbody>
-    </table>
+    <app-game-board [board]="state.board"></app-game-board>
 
     <div class="flex flex-row items-center gap-x-2">
       <ul *ngIf="state.game.state === GameState.Ongoing" class="flex mt-3">

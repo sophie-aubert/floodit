@@ -18,7 +18,7 @@ type GameIsLoading = {
 type Playing = {
   readonly name: CurrentGameState.Playing;
   readonly game: Game;
-  readonly board: string[][];
+  readonly board: number[][];
   readonly playableColors: string[];
 };
 

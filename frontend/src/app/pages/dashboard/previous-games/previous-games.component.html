@@ -1,7 +1,14 @@
 <table class="table table-zebra w-full">
+  <!-- Caption -->
   <caption class="mb-5 text-left text-2xl font-bold">
-    Previous games
+    <span>Previous games</span>
+    <span *ngIf="games.length !== 0" class="text-slate-500">
+      {{ ' ' }}
+      ({{ games.length }})
+    </span>
   </caption>
+
+  <!-- Header -->
   <thead>
     <tr>
       <th>Player</th>
@@ -10,7 +17,9 @@
       <th>Moves</th>
     </tr>
   </thead>
+
   <tbody>
+    <!-- Loading -->
     <tr *ngIf="state === State.Loading">
       <td colspan="1000">
         <div class="flex font-sm text-info">
@@ -32,6 +41,8 @@
         </div>
       </td>
     </tr>
+
+    <!-- Error -->
     <tr *ngIf="state === State.Error">
       <td colspan="1000" class="bg-error text-error-content">
         <div class="flex">
@@ -53,6 +64,15 @@
         </div>
       </td>
     </tr>
+
+    <!-- No results -->
+    <tr *ngIf="state === State.Loaded && games.length === 0">
+      <td colspan="1000">
+        <em class="text-slate-500">No games have been played yet.</em>
+      </td>
+    </tr>
+
+    <!-- Results -->
     <tr *ngFor="let game of games">
       <td>{{ game.playerName }}</td>
       <td>

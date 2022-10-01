@@ -1,0 +1,37 @@
+<div class="hero bg-base-200">
+  <div class="hero-content flex-col lg:flex-row-reverse">
+    <div class="text-center lg:text-left">
+      <h1 class="text-5xl font-bold">Who are you?</h1>
+      <p class="py-6">Enter your name for posterity.</p>
+    </div>
+
+    <div class="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
+      <div class="card-body">
+        <form (submit)="submit(form)" #form="ngForm">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Player name</span>
+            </label>
+            <input
+              type="text"
+              placeholder="Please enter your name"
+              class="input input-bordered"
+              [(ngModel)]="profile.name"
+              name="name"
+              required
+            />
+          </div>
+          <div class="form-control mt-6">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="form.invalid"
+            >
+              Let me play!
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

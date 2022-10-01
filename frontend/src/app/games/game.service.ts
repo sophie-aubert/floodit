@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { NavigationService } from '../navigation.service';
 import { GameApiService } from './game-api.service';
-import { colors } from './game.constants';
-import { CreateGameParams, Game, Move, PlayParams } from './game.model';
+import { CreateGameParams, Game } from './game.model';
 
 const storageKey = 'floodit.game';
 
@@ -16,7 +15,7 @@ type LocalGameData = {
 
 export type CurrentGame = {
   readonly game: Game;
-  readonly board: string[][];
+  readonly board: number[][];
 };
 
 @Injectable({
@@ -48,7 +47,7 @@ export class GameService {
         return this.gameApi.loadGameBoard$(createdGame.id).pipe(
           map(board => ({
             game: createdGame,
-            board: board.map(row => row.map(color => colors[color]))
+            board
           }))
         );
       })
@@ -68,7 +67,7 @@ export class GameService {
 
         for (const currentMove of newGame.moves) {
           for (const [col, row] of currentMove.flooded) {
-            newBoard[row][col] = colors[color];
+            newBoard[row][col] = color;
           }
         }
 
@@ -94,7 +93,7 @@ export class GameService {
     ]).pipe(
       map(([game, board]) => ({
         game,
-        board: board.map(row => row.map(color => colors[color]))
+        board
       }))
     );
   }

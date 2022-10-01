@@ -1,4 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { random } from 'lodash-es';
+import { colors } from 'src/app/games/game.constants';
 import { GameService } from 'src/app/games/game.service';
 import { NavigationService } from 'src/app/navigation.service';
 
@@ -7,7 +9,7 @@ import { NavigationService } from 'src/app/navigation.service';
   templateUrl: './new-game-card.component.html',
   styleUrls: ['./new-game-card.component.css']
 })
-export class NewGameCardComponent {
+export class NewGameCardComponent implements OnChanges {
   @Input()
   title!: string;
 
@@ -29,15 +31,33 @@ export class NewGameCardComponent {
   @Input()
   maxMoves!: number;
 
+  @Input()
+  playerName!: string;
+
+  @Input()
+  palette: string[] = colors;
+
+  board?: number[][];
+
   constructor(
     private readonly gameService: GameService,
     private readonly navigationService: NavigationService
   ) {}
 
+  ngOnChanges(): void {
+    this.board = new Array(this.boardWidth)
+      .fill(0)
+      .map(row =>
+        new Array(this.boardHeight)
+          .fill(0)
+          .map(() => random(0, this.numberOfColors - 1))
+      );
+  }
+
   startGame(): void {
     this.gameService
       .startGame$({
-        playerName: 'John Doe',
+        playerName: this.playerName,
         boardWidth: this.boardWidth,
         boardHeight: this.boardHeight,
         numberOfColors: this.numberOfColors,

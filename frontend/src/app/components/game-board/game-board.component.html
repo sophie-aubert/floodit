@@ -1,0 +1,15 @@
+<table>
+  <caption class="sr-only">
+    Game board
+  </caption>
+
+  <tbody>
+    <tr *ngFor="let row of board">
+      <td
+        *ngFor="let color of row"
+        class="w-5 h-5"
+        [style.background-color]="palette[color]"
+      ></td>
+    </tr>
+  </tbody>
+</table>

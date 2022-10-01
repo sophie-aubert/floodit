@@ -1,10 +1,20 @@
 <div
-  class="card text-success-content cursor-pointer"
+  class="card shadow-xl cursor-pointer text-success-content hover:bg-accent-focus hover:text-accent-content"
   [ngClass]="cardClass"
   (click)="startGame()"
 >
   <div class="card-body">
     <h2 class="card-title">{{ title }}</h2>
     <p>{{ description }}</p>
+  </div>
+
+  <div class="flex justify-center px-3 pb-3">
+    <div class="border-2 border-gray-900">
+      <app-game-board
+        *ngIf="board"
+        [board]="board"
+        [palette]="palette"
+      ></app-game-board>
+    </div>
   </div>
 </div>

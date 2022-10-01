@@ -1,5 +1,9 @@
-<section>
-  <div class="grid grid-cols-3 gap-x-5">
+<section *ngIf="!(profile$ | async)">
+  <app-registration></app-registration>
+</section>
+
+<section *ngIf="profile$ | async as profile">
+  <div class="grid lg:grid-cols-3 gap-x-5 gap-y-5">
     <app-new-game-card
       title="Easy"
       description="When you like to win effortlessly."
@@ -8,6 +12,7 @@
       [boardHeight]="4"
       [numberOfColors]="4"
       [maxMoves]="10"
+      [playerName]="profile.name"
     ></app-new-game-card>
 
     <app-new-game-card
@@ -18,6 +23,7 @@
       [boardHeight]="10"
       [numberOfColors]="10"
       [maxMoves]="14"
+      [playerName]="profile.name"
     ></app-new-game-card>
 
     <app-new-game-card
@@ -28,6 +34,7 @@
       [boardHeight]="14"
       [numberOfColors]="10"
       [maxMoves]="14"
+      [playerName]="profile.name"
     ></app-new-game-card>
   </div>
 </section>
