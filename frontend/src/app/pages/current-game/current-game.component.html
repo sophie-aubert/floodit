@@ -1,47 +1,105 @@
-<ng-container *ngIf="state$ | async as state">
-  <ng-container *ngIf="state.name === CurrentGameState.Playing">
-    <h1>
-      Game by {{ state.game.playerName }} created on
-      {{
-        DateTime.fromISO(state.game.createdAt).toLocaleString(
-          DateTime.DATETIME_FULL
-        )
-      }}
-    </h1>
+<section class="flex flex-col items-center">
+  <div class="border-2 border-gray-900">
+    <app-game-board *ngIf="board" [board]="board"></app-game-board>
+  </div>
 
-    <app-game-board [board]="state.board"></app-game-board>
+  <ng-container *ngIf="game">
+    <div *ngIf="playableColors" class="card w-96 bg-base-200 shadow-xl mt-5">
+      <div class="card-body items-center">
+        <ul *ngIf="game.state === GameState.Ongoing" class="flex mt-3">
+          <li *ngFor="let color of playableColors; index as i">
+            <button
+              type="button"
+              (click)="play(i)"
+              class="w-5 h-5"
+              [style.background-color]="color"
+            ></button>
+          </li>
+        </ul>
 
-    <div class="flex flex-row items-center gap-x-2">
-      <ul *ngIf="state.game.state === GameState.Ongoing" class="flex mt-3">
-        <li *ngFor="let color of state.playableColors; index as i">
-          <button
-            type="button"
-            (click)="play(i)"
-            class="w-5 h-5"
-            [style.background-color]="color"
-          ></button>
-        </li>
-      </ul>
+        <ng-container *ngIf="game.moves.length !== 0">
+          <progress
+            *ngIf="progress !== undefined"
+            class="progress w-full bg-slate-500 mt-3"
+            [ngClass]="{
+              'progress-success': progress <= 50,
+              'progress-warning': progress > 50 && progress <= 75,
+              'progress-error': progress > 75
+            }"
+            [value]="progress"
+            max="100"
+          ></progress>
 
-      <span>
-        {{ state.game.maxMoves - state.game.moves.length }} moves left
-      </span>
+          <p>{{ game.maxMoves - game.moves.length }} moves left</p>
+        </ng-container>
+
+        <p
+          *ngIf="game.state === GameState.Ongoing"
+          class="text-center mt-3"
+          [ngClass]="{
+            'text-sm': game.moves.length !== 0,
+            'text-info': game.moves.length === 0,
+            'text-slate-500': game.moves.length !== 0
+          }"
+        >
+          Pick a color. The top-left cell and all adjacent cells of the same
+          color will be filled with the new color. The goal is to flood the
+          board with one color.
+        </p>
+
+        <div
+          *ngIf="game.state !== GameState.Ongoing"
+          class="alert shadow-lg"
+          [ngClass]="{
+            'alert-success': game.state === GameState.Win,
+            'alert-error': game.state === GameState.Loss
+          }"
+        >
+          <div class="flex gap-x-2 items-center">
+            <svg
+              *ngIf="game.state === GameState.Win"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <svg
+              *ngIf="game.state === GameState.Loss"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+              />
+            </svg>
+            <span *ngIf="game.state === GameState.Win">You have won!</span>
+            <span *ngIf="game.state === GameState.Loss">You have lost.</span>
+          </div>
+        </div>
+
+        <button
+          *ngIf="game.state !== GameState.Ongoing"
+          type="button"
+          class="btn btn-primary mt-3"
+          (click)="playAnotherGame()"
+        >
+          Play again
+        </button>
+      </div>
     </div>
-
-    <p *ngIf="state.game.state === GameState.Win" class="text-green-500">
-      You have won!
-    </p>
-
-    <p *ngIf="state.game.state === GameState.Loss" class="text-red-500">
-      You have lost...
-    </p>
-
-    <button
-      *ngIf="state.game.state !== GameState.Ongoing"
-      type="button"
-      (click)="playAnotherGame()"
-    >
-      Play again
-    </button>
   </ng-container>
-</ng-container>
+</section>

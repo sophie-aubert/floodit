@@ -6,23 +6,17 @@ import { Game, GameState } from 'src/app/games/game.model';
 import { CurrentGame, GameService } from 'src/app/games/game.service';
 import { NavigationService } from 'src/app/navigation.service';
 
-enum CurrentGameState {
-  GameIsLoading,
-  Playing
+enum State {
+  Loading,
+  Playing,
+  Error
 }
 
-type GameIsLoading = {
-  readonly name: CurrentGameState.GameIsLoading;
-};
-
 type Playing = {
-  readonly name: CurrentGameState.Playing;
   readonly game: Game;
   readonly board: number[][];
   readonly playableColors: string[];
 };
-
-type State = GameIsLoading | Playing;
 
 @Component({
   selector: 'app-current-game',
@@ -30,61 +24,67 @@ type State = GameIsLoading | Playing;
   styleUrls: ['./current-game.component.css']
 })
 export class CurrentGameComponent implements OnInit {
-  readonly state$: Observable<State>;
-  readonly CurrentGameState = CurrentGameState;
+  state: State;
+  currentGame?: CurrentGame;
+  playableColors?: string[];
+
+  readonly palette = colors;
   readonly DateTime = DateTime;
   readonly GameState = GameState;
-
-  readonly #state$: BehaviorSubject<State>;
+  readonly State = State;
 
   constructor(
     private readonly gameService: GameService,
     private readonly navigationService: NavigationService
   ) {
-    this.#state$ = new BehaviorSubject<State>({
-      name: CurrentGameState.GameIsLoading
-    });
-    this.state$ = this.#state$.asObservable();
+    this.state = State.Loading;
+  }
+
+  get game(): Game | undefined {
+    return this.currentGame?.game;
+  }
+
+  get board(): number[][] | undefined {
+    return this.currentGame?.board;
+  }
+
+  get progress(): number | undefined {
+    if (!this.game) {
+      return;
+    }
+
+    return Math.round((this.game.moves.length * 100) / this.game.maxMoves);
   }
 
   ngOnInit(): void {
-    this.gameService.loadCurrentGame$().subscribe(currentGame => {
-      if (!currentGame) {
-        return this.navigationService.goToDashboard();
-      }
+    this.gameService.loadCurrentGame$().subscribe({
+      next: currentGame => {
+        if (!currentGame) {
+          return this.navigationService.goToDashboard();
+        }
 
-      this.#setCurrentGame(currentGame);
+        this.state = State.Playing;
+        this.currentGame = currentGame;
+        this.playableColors = this.palette.slice(
+          0,
+          currentGame.game.numberOfColors
+        );
+      },
+      error: () => (this.state = State.Error)
     });
   }
 
   play(color: number): void {
-    this.state$
-      .pipe(
-        first(),
-        filter(isPlaying),
-        switchMap(({ game, board }) =>
-          this.gameService.play$({ game, board }, color)
-        )
-      )
-      .subscribe(currentGame => this.#setCurrentGame(currentGame));
+    if (this.state !== State.Playing || !this.currentGame) {
+      return;
+    }
+
+    this.gameService
+      .play$(this.currentGame, color)
+      .subscribe(currentGame => (this.currentGame = currentGame));
   }
 
   playAnotherGame(): void {
     this.gameService.stopCurrentGame();
   }
-
-  #setCurrentGame(currentGame: CurrentGame) {
-    this.#state$.next({
-      name: CurrentGameState.Playing,
-      game: currentGame.game,
-      board: currentGame.board,
-      playableColors: Array(currentGame.game.numberOfColors)
-        .fill(0)
-        .map((_value, i) => colors[i])
-    });
-  }
-}
-
-function isPlaying(state: State): state is Playing {
-  return state.name === CurrentGameState.Playing;
 }

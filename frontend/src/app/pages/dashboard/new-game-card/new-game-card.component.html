@@ -4,7 +4,16 @@
   (click)="startGame()"
 >
   <div class="card-body">
-    <h2 class="card-title">{{ title }}</h2>
+    <h2 class="card-title">
+      <div class="flex flex-col">
+        {{ title }}
+        <small class="text-sm font-normal">
+          {{ boardWidth }}x{{ boardHeight }} board,
+          {{ ' ' }}
+          {{ maxMoves }} moves
+        </small>
+      </div>
+    </h2>
     <p>{{ description }}</p>
   </div>
 
