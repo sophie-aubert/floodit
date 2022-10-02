@@ -1,15 +1,12 @@
-<table>
-  <caption class="sr-only">
-    Game board
-  </caption>
-
-  <tbody>
-    <tr *ngFor="let row of boardColors">
-      <td
-        *ngFor="let color of row"
-        class="w-5 h-5"
-        [style.background-color]="color"
-      ></td>
-    </tr>
-  </tbody>
-</table>
+<div
+  class="grid w-full"
+  [style.grid-template-columns]="'repeat(' + width + ', minmax(0, 1fr))'"
+>
+  <ng-container *ngFor="let row of boardColors">
+    <div
+      *ngFor="let color of row"
+      class="aspect-square"
+      [style.background-color]="color"
+    ></div>
+  </ng-container>
+</div>
