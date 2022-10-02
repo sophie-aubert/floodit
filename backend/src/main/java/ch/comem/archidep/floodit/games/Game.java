@@ -78,7 +78,7 @@ public class Game {
   Game(CreateGameDto dto) {
     this();
     Objects.requireNonNull(dto, "DTO is required");
-    this.secret = RandomStringUtils.randomAscii(255);
+    this.secret = RandomStringUtils.randomAlphanumeric(255);
     this.state = GameState.ONGOING;
     this.playerName =
       Objects.requireNonNull(dto.playerName(), "Player name is required");
