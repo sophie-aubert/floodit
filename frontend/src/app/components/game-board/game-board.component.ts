@@ -18,6 +18,12 @@ export class GameBoardComponent implements OnInit, OnChanges {
 
   boardColors!: string[][];
 
+  #revealedPositions: Array<[number, number]>;
+
+  constructor() {
+    this.#revealedPositions = [];
+  }
+
   get width() {
     return this.board[0].length;
   }
@@ -28,20 +34,20 @@ export class GameBoardComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.#fillBoardWithBlack();
-    this.#progressivelyFillBoard();
+    this.#progressivelyRevealBoard();
   }
 
   ngOnChanges(): void {
-    this.boardColors = this.board.map(row =>
-      row.map(color => this.palette[color])
-    );
+    for (const position of this.#revealedPositions) {
+      this.#fillPositionWithActualColor(position);
+    }
   }
 
   #fillBoardWithBlack() {
     this.boardColors = this.board.map(row => row.map(blackFunc));
   }
 
-  #fillBoardWithActualColor(position: [number, number]) {
+  #fillPositionWithActualColor(position: [number, number]) {
     const [row, col] = position;
     this.boardColors[row][col] = this.#getBoardColor(position);
   }
@@ -50,7 +56,7 @@ export class GameBoardComponent implements OnInit, OnChanges {
     return this.palette[this.board[row][col]];
   }
 
-  #progressivelyFillBoard() {
+  #progressivelyRevealBoard() {
     const width = this.width;
     const height = this.height;
 
@@ -108,14 +114,14 @@ export class GameBoardComponent implements OnInit, OnChanges {
     >,
     i = 0
   ) {
-    requestAnimationFrame(() => {
-      setTimeout(() => {
-        this.#fillBoardWithActualColor(position);
-        if (remainingPositions.length !== 0) {
-          this.#progressivelyRevealPositions(remainingPositions, i + 1);
-        }
-      }, delay);
-    });
+    setTimeout(() => {
+      this.#fillPositionWithActualColor(position);
+      this.#revealedPositions.push(position);
+
+      if (remainingPositions.length !== 0) {
+        this.#progressivelyRevealPositions(remainingPositions, i + 1);
+      }
+    }, delay);
   }
 }
 
