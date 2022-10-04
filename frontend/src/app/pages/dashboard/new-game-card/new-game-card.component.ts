@@ -1,5 +1,6 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { random } from 'lodash-es';
+import { ToastrService } from 'ngx-toastr';
 import { colors } from 'src/app/games/game.constants';
 import { GameService } from 'src/app/games/game.service';
 import { NavigationService } from 'src/app/navigation.service';
@@ -41,7 +42,8 @@ export class NewGameCardComponent implements OnChanges {
 
   constructor(
     private readonly gameService: GameService,
-    private readonly navigationService: NavigationService
+    private readonly navigationService: NavigationService,
+    private readonly toastrService: ToastrService
   ) {}
 
   ngOnChanges(): void {
@@ -63,6 +65,15 @@ export class NewGameCardComponent implements OnChanges {
         numberOfColors: this.numberOfColors,
         maxMoves: this.maxMoves
       })
-      .subscribe(() => this.navigationService.goToCurrentGame());
+      .subscribe({
+        next: () => this.navigationService.goToCurrentGame(),
+        error: err => {
+          console.warn(err);
+          this.toastrService.error(
+            'An error occurred while creating the game.',
+            'Oops?'
+          );
+        }
+      });
   }
 }

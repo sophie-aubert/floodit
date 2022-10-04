@@ -33,7 +33,10 @@ export class PreviousGamesComponent implements OnInit {
         this.games.push(...games);
         this.state = State.Loaded;
       },
-      error: () => (this.state = State.Error)
+      error: err => {
+        console.warn(err);
+        this.state = State.Error;
+      }
     });
   }
 }

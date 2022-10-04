@@ -6,14 +6,14 @@
   "author": "Simon Oulevay <npm@alphahydrae.com>",
   "private": true,
   "scripts": {
+    "build": "ng build",
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "watch": "ng build --watch --configuration development"
   },
   "dependencies": {
-    "@angular/animations": "^14.1.0",
+    "@angular/animations": "^14.2.4",
     "@angular/common": "^14.1.0",
     "@angular/compiler": "^14.1.0",
     "@angular/core": "^14.1.0",
@@ -25,6 +25,7 @@
     "daisyui": "^2.31.0",
     "lodash-es": "^4.17.21",
     "luxon": "^3.0.1",
+    "ngx-toastr": "^15.2.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.11.4"

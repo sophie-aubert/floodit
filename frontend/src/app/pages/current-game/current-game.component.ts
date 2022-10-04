@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DateTime } from 'luxon';
-import { BehaviorSubject, filter, first, Observable, switchMap } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 import { colors } from 'src/app/games/game.constants';
 import { Game, GameState } from 'src/app/games/game.model';
 import { CurrentGame, GameService } from 'src/app/games/game.service';
@@ -11,12 +11,6 @@ enum State {
   Playing,
   Error
 }
-
-type Playing = {
-  readonly game: Game;
-  readonly board: number[][];
-  readonly playableColors: string[];
-};
 
 @Component({
   selector: 'app-current-game',
@@ -35,7 +29,8 @@ export class CurrentGameComponent implements OnInit {
 
   constructor(
     private readonly gameService: GameService,
-    private readonly navigationService: NavigationService
+    private readonly navigationService: NavigationService,
+    private readonly toastrService: ToastrService
   ) {
     this.state = State.Loading;
   }
@@ -70,7 +65,14 @@ export class CurrentGameComponent implements OnInit {
           currentGame.game.numberOfColors
         );
       },
-      error: () => (this.state = State.Error)
+      error: err => {
+        console.warn(err);
+        this.toastrService.error(
+          'The current game could not be loaded.',
+          'Oops?'
+        );
+        this.state = State.Error;
+      }
     });
   }
 
@@ -79,9 +81,18 @@ export class CurrentGameComponent implements OnInit {
       return;
     }
 
-    this.gameService
-      .play$(this.currentGame, color)
-      .subscribe(currentGame => (this.currentGame = currentGame));
+    this.gameService.play$(this.currentGame, color).subscribe({
+      next: currentGame => {
+        this.currentGame = currentGame;
+      },
+      error: err => {
+        console.warn(err);
+        this.toastrService.error(
+          'An error occurred while playing your move.',
+          'Oops?'
+        );
+      }
+    });
   }
 
   playAnotherGame(): void {
