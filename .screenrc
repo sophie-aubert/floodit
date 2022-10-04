@@ -1,7 +1,7 @@
 source $HOME/.screenrc
 
 screen -t db 0
-stuff "mysql -ufloodit -p"
+stuff "psql floodit"
 
 screen -t back 1
 stuff "cd backend\012mvn clean test"
