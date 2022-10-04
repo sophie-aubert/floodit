@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/AlphaHydrae/floodit#readme",
   "scripts": {
+    "build": "npm run --workspace frontend build",
     "check": "npm run --workspace backend check",
     "check:write": "npm run --workspace backend check:write",
     "doctoc": "doctoc --github --notitle README.md && prettier --write README.md",
