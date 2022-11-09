@@ -127,7 +127,7 @@ You should see no errors.
 > For more information, read the [tests' source code in the `test`
 > directory](./backend/src/test/java/ch/comem/archidep/floodit).
 
-## Run the backend application
+## Run the backend application in development mode
 
 You can run the application manually by executing the following command from the
 repository:
@@ -136,8 +136,8 @@ repository:
 mvn spring-boot:run
 ```
 
-The application runs on port 3000 by default. If it is already in use, you can
-use the `server.port` parameter in the local configuration file or the
+The application runs on port 3000 by default. If that port is already in use,
+you can use the `server.port` parameter in the local configuration file or the
 `$FLOODIT_SERVER_PORT` environment variable to switch to another port, for
 example:
 
@@ -145,12 +145,21 @@ example:
 $> FLOODIT_SERVER_PORT=3001 mvn spring-boot:run
 ```
 
-> To run the application with a process manager like [systemd][systemd], you can
-> run the same command except that it should be an absolute path. For example:
->
-> ```bash
-> $> /path/to/mvn spring-boot:run
-> ```
+## Run the backend application in production mode
+
+Build the backend application:
+
+```bash
+mvn clean install -Pskip-test
+```
+
+Run the packaged [JAR file][jar]. This must be done from the `backend` directory
+in the repository:
+
+```bash
+cd backend
+java -jar target/floodit-1.0.0-SNAPSHOT.jar
+```
 
 ## Updating
 
@@ -192,8 +201,10 @@ You can configure the application in one of two ways:
 
 [angular]: https://angular.io
 [automated-tests]: https://en.wikipedia.org/wiki/Test_automation
+[jar]: https://en.wikipedia.org/wiki/JAR_(file_format)
 [java]: https://www.java.com
 [js]: https://developer.mozilla.org/en-US/docs/Web/JavaScript
+[maven]: https://maven.apache.org
 [node]: https://nodejs.org
 [npm]: https://www.npmjs.com
 [postgresql]: https://www.postgresql.org
