@@ -13,3 +13,4 @@ spring:
     generate-ddl: false
     hibernate:
       ddl-auto: validate
+    open-in-view: false

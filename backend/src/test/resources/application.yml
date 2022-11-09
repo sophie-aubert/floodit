@@ -19,5 +19,6 @@ spring:
               action: create
               create-target: src/main/resources/db/create.sql
               create-source: metadata
+    open-in-view: false
   profiles:
     active: test
