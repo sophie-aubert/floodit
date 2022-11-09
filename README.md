@@ -71,7 +71,7 @@ Additionally, to compile the backend and frontend, you will need:
   $> npm ci
   ```
 
-- Configure the application. **You can do this in one of two ways:**
+- Configure the application.
 
   - Set any of the [documented environment variables](#environment-variables),
     for example:
@@ -80,7 +80,7 @@ Additionally, to compile the backend and frontend, you will need:
     export FLOODIT_DATABASE_HOST=localhost
     export FLOODIT_DATABASE_PORT=5432
     export FLOODIT_DATABASE_NAME=floodit
-    export FLOODIT_DATABASE_USER=floodit
+    export FLOODIT_DATABASE_USERNAME=floodit
     export FLOODIT_DATABASE_PASSWORD=mysecretpassword
     export FLOODIT_SERVER_PORT=3000
     ```
@@ -172,7 +172,7 @@ You may then restart the application.
 
 ## Configuration
 
-You can configure the application in two ways:
+You can configure the application in one of two ways:
 
 - Either create a `backend/config/application-default.local.yml` file in the
   application's directory (see the
@@ -185,9 +185,9 @@ You can configure the application in two ways:
 | :-------------------------- | :------------ | :-------------------------------------------------------- |
 | `FLOODIT_DATABASE_HOST`     | `localhost`   | The host at which the PostgreSQL database can be reached. |
 | `FLOODIT_DATABASE_PORT`     | `5432`        | The port at which the PostgreSQL database can be reached. |
-| `FLOODIT_DATABASE_NAME`     | `5432`        | The name of the PostgreSQL database.                      |
-| `FLOODIT_DATABASE_USER`     | `5432`        | The PostgreSQL user to connect as.                        |
-| `FLOODIT_DATABASE_PASSWORD` | `5432`        | The password of the PostgreSQL user.                      |
+| `FLOODIT_DATABASE_NAME`     | `floodit`     | The name of the PostgreSQL database.                      |
+| `FLOODIT_DATABASE_USERNAME` | `floodit`     | The PostgreSQL user to connect as.                        |
+| `FLOODIT_DATABASE_PASSWORD` | -             | The password of the PostgreSQL user.                      |
 | `FLOODIT_SERVER_PORT`       | `3000`        | The port the HTTP server listens on.                      |
 
 [angular]: https://angular.io

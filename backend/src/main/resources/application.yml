@@ -4,7 +4,7 @@ server:
 spring:
   datasource:
     url: jdbc:postgresql://${FLOODIT_DATABASE_HOST:localhost}:${FLOODIT_DATABASE_PORT:5432}/${FLOODIT_DATABASE_NAME:floodit}
-    username: ${FLOODIT_DATABASE_USER:floodit}
+    username: ${FLOODIT_DATABASE_USERNAME:floodit}
     password: ${FLOODIT_DATABASE_PASSWORD}
   flyway:
     enabled: true
