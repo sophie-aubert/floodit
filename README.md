@@ -25,6 +25,7 @@ To run the application, you will need:
 Additionally, to compile the backend and frontend, you will need:
 
 - The [Java][java] 17 JDK
+- [Maven][maven] 3
 - [Node.js][node] 18
 
 ## Initial setup
