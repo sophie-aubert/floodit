@@ -47,10 +47,10 @@ export class NewGameCardComponent implements OnChanges {
   ) {}
 
   ngOnChanges(): void {
-    this.board = new Array(this.boardWidth)
+    this.board = new Array(this.boardHeight)
       .fill(0)
       .map(row =>
-        new Array(this.boardHeight)
+        new Array(this.boardWidth)
           .fill(0)
           .map(() => random(0, this.numberOfColors - 1))
       );
