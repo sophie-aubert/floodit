@@ -190,14 +190,19 @@ You can configure the application in one of two ways:
 
 ### Environment variables
 
-| Environment variable        | Default value | Description                                               |
-| :-------------------------- | :------------ | :-------------------------------------------------------- |
-| `FLOODIT_DATABASE_HOST`     | `localhost`   | The host at which the PostgreSQL database can be reached. |
-| `FLOODIT_DATABASE_PORT`     | `5432`        | The port at which the PostgreSQL database can be reached. |
-| `FLOODIT_DATABASE_NAME`     | `floodit`     | The name of the PostgreSQL database.                      |
-| `FLOODIT_DATABASE_USERNAME` | `floodit`     | The PostgreSQL user to connect as.                        |
-| `FLOODIT_DATABASE_PASSWORD` | -             | The password of the PostgreSQL user.                      |
-| `FLOODIT_SERVER_PORT`       | `3000`        | The port the HTTP server listens on.                      |
+| Environment variable             | Default value  | Description                                                    |
+| :------------------------------- | :------------- | :------------------------------------------------------------- |
+| `FLOODIT_DATABASE_HOST`          | `localhost`    | The host at which the PostgreSQL database can be reached.      |
+| `FLOODIT_DATABASE_PORT`          | `5432`         | The port at which the PostgreSQL database can be reached.      |
+| `FLOODIT_DATABASE_NAME`          | `floodit`      | The name of the PostgreSQL database.                           |
+| `FLOODIT_DATABASE_USERNAME`      | `floodit`      | The PostgreSQL user to connect as.                             |
+| `FLOODIT_DATABASE_PASSWORD`      | -              | The password of the PostgreSQL user.                           |
+| `FLOODIT_SERVER_PORT`            | `3000`         | The port the HTTP server listens on.                           |
+| `FLOODIT_TEST_DATABASE_HOST`     | `localhost`    | The host at which the PostgreSQL test database can be reached. |
+| `FLOODIT_TEST_DATABASE_PORT`     | `5432`         | The port at which the PostgreSQL test database can be reached. |
+| `FLOODIT_TEST_DATABASE_NAME`     | `floodit-test` | The name of the PostgreSQL test database.                      |
+| `FLOODIT_TEST_DATABASE_USERNAME` | `floodit`      | The PostgreSQL user to connect as for the test database.       |
+| `FLOODIT_TEST_DATABASE_PASSWORD` | -              | The password of the PostgreSQL user for the test database.     |
 
 [angular]: https://angular.io
 [automated-tests]: https://en.wikipedia.org/wiki/Test_automation
