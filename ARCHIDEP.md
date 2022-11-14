@@ -172,6 +172,9 @@ described in the [project's README][readme] on your server:
 
   > :books: TODO: jre vs jdk
 
+- **How to install Maven:** follow these instructions to [**Install Mavenon
+  Ubuntu with apt**](https://phoenixnap.com/kb/install-maven-on-ubuntu) (the
+  first 3 steps only).
 - **How to install Node.js:** there are several methods to install Node.js. One
   of the simplest is to use the [binary distributions provided by
   NodeSource][node-install]. You should look for installation instructions

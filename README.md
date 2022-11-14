@@ -58,7 +58,8 @@ Additionally, to compile the backend and frontend, you will need:
   $> git clone https://github.com/MediaComem/floodit.git
   ```
 
-- Download dependencies and compile the application (_this might take a while the first time_):
+- Download dependencies and compile the application (_this might take a while
+  the first time_):
 
   ```bash
   $> cd floodit
@@ -127,7 +128,7 @@ You should see no errors.
 > For more information, read the [tests' source code in the `test`
 > directory](./backend/src/test/java/ch/comem/archidep/floodit).
 
-## Run the backend application in development mode
+## Run the application in development mode
 
 You can run the application manually by executing the following command from the
 repository:
@@ -145,7 +146,7 @@ example:
 $> FLOODIT_SERVER_PORT=3001 mvn spring-boot:run
 ```
 
-## Run the backend application in production mode
+## Run the application in production mode
 
 Build the backend application:
 
