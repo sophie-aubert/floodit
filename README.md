@@ -71,10 +71,10 @@ Additionally, to compile the backend and frontend, you will need:
   $> npm ci
   ```
 
-- Configure the application.
+- Configure the application:
 
-  - Set any of the [documented environment variables](#environment-variables),
-    for example:
+  - Either set any of the [documented environment
+    variables](#environment-variables), for example:
 
     ```bash
     export FLOODIT_DATABASE_HOST=localhost
@@ -85,7 +85,7 @@ Additionally, to compile the backend and frontend, you will need:
     export FLOODIT_SERVER_PORT=3000
     ```
 
-  - Create a local configuration file based on the provided sample:
+  - Or create a local configuration file based on the provided sample:
 
     ```bash
     cp backend/config/application-default.local.sample.yml backend/config/application-default.local.yml

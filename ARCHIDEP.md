@@ -311,76 +311,42 @@ when you installed PostgreSQL and has administrative privileges on the entire
 PostgreSQL cluster. You can verify the existence of this user with the command
 `cat /etc/passwd | grep postgres`.
 
-:books: The setup instructions use the **`mvn` command**. [Maven][mvn] is the
-dependency manager and build tool of the [Elixir][elixir] ecosystem, much like
+:books: The setup instructions use the **`mvn` command**. [Maven][mvn] is a
+software project management tool for the [Java][java] ecosystem, much like
 [Composer][composer] for [PHP][php] or [npm][npm] for [Node.js][node].
 
-- The [**`mix deps.get` command**][mix-deps-get] is used to download all of the
-  Minesweeper Elixir application's dependencies, i.e. the Elixir/Erlang
-  libraries it requires to work, like the [Phoenix][phoenix] web framework.
-  Phoenix is a web framework written in [Elixir][elixir] much like
-  [Laravel][laravel] is a web framework written in [PHP][php].
+- A Maven project has one or several Project Object Model (POM) files. These
+  `pom.xml` files describe a project's dependencies and how to build it (you can
+  look at the Flood It application's `backend/pom.xml` file as an example).
+- The **`mvn clean install -Pskip-test` command** is used to:
 
-  The dependencies and which versions to install are [listed in the
-  application's `mix.exs` file][app-deps]. They are downloaded from [Hex][hex],
-  the package registry for the Elixir and Erlang ecosystems, and saved into the
-  `deps` directory.
+  - Download all of the Flood It application's dependencies (i.e. the Java
+    libraries it requires to work), like the [Spring Boot][spring-boot] web
+    framework. Spring Boot is a web framework written in [Java][java] much
+    like [Laravel][laravel] is a web framework written in [PHP][php].
 
-- The [**`mix compile` command**][mix-compile] compiles the application's Elixir
-  source files from the `lib` and `test` directories into the `_build`
-  directory. This step is necessary because Elixir is a compiled language which
-  must be compiled to [BEAM][beam] bytecode (the BEAM is the [Elixir &
-  Erlang/OTP][erlang] runtime), much like [Java][java] must be compiled to [Java
-  Virtual Machine][jvm] bytecode (the JVM is the Java runtime).
-- The **`mix frontend.install` command** is an
-  [alias](https://github.com/MediaComem/minesweeper/blob/ca3e6fb2956afc751274ce2589ff9490c90c5e00/mix.exs#L70)
-  for the [`scripts/install-frontend.sh`
-  script](https://github.com/MediaComem/minesweeper/blob/ca3e6fb2956afc751274ce2589ff9490c90c5e00/scripts/install-frontend.sh)
-  which will download the JavaScript dependencies required by the application's
-  [Alpine.js][alpinejs] frontend. The script uses [npm][npm], the
-  [Node.js][node] & [JavaScript][js] package manager which is installed
-  alongside Node.js.
+    The dependencies are downloaded from [Maven Central][mvn-central],
+    the main package registry for the Elixir and Erlang ecosystems, and saved into the
+    `deps` directory.
 
-  The dependencies and which versions to install are [listed in the
-  application's `assets/package.json`
-  file](https://github.com/MediaComem/minesweeper/blob/ca3e6fb2956afc751274ce2589ff9490c90c5e00/assets/package.json#L10-L26).
-  They are downloaded from the [npm repository][npm] and saved into the
-  `assets/node_modules` directory.
+  - Build the application (i.e. compile the Java source code into Java Virtual
+    Machine bytecode).
+  - Install the application into the local Maven repository.
 
-- The [`mix ecto.migrate` command][mix-ecto-migrate] command executes [the
-  application's database
-  migrations](https://github.com/MediaComem/minesweeper/blob/ca3e6fb2956afc751274ce2589ff9490c90c5e00/priv/repo/migrations/20210921151550_initial_schema.exs).
-  These migrations are Elixir programs that will connect to the database and
-  create the table(s) required by the application.
+- TODO: explain other Java commands
 
-  This is equivalent to [the rest of the `todolist.sql`
-  script](https://github.com/MediaComem/comem-archidep-php-todo-exercise/blob/5d46e9fcf974d3d74d5eec838c512798f02581e1/todolist.sql#L12-L18)
-  you executed when first deploying the PHP todolist.
-
-:books: The configuration you are instructed to perform either through the
-`config/local.exs` file or through environment variables is equivalent to the
+:books: The configuration you are instructed to perform either through
+environment variables or through the
+`backend/config/application-default.local.yml` file is equivalent to the
 [configuration of the PHP
 todolist](https://github.com/MediaComem/comem-archidep-php-todo-exercise/blob/5d46e9fcf974d3d74d5eec838c512798f02581e1/index.php#L3-L15)
 which you improved during the course using environment variables. It is not
 uncommon for applications to provide multiple configuration mechanisms, letting
 you choose which is more convenient for you.
 
-:books: Note that the PHP todolist used separate database connection settings
-(`TODOLIST_DB_NAME`, `TODOLIST_DB_USER`, `TODOLIST_DB_PASS`, `TODOLIST_DB_HOST`,
-`TODOLIST_DB_PORT`), while the Minesweeper application uses a database
-connection URL specified with `MINESWEEPER_DATABASE_URL` or in the configuration
-file). This URL contains the same settings in one value. This is possible
-because the [syntax of an URL][url] is
-`<scheme>://<user>:<password>@<host>:<port>/<path>`, therefore all database
-connection parameters can be specified in one URL:
-`ecto://myuser:mypassword@localhost:5432/mydatabasename`. ([Ecto][ecto] is the
-[Object-Relational Mapper (ORM)][orm] used with the [Phoenix][phoenix]
-framework, much like [Eloquent][eloquent] is the ORM used with the
-[Laravel][laravel] framework.)
-
 ### :question: Optional: run the automated tests
 
-The Minesweeper application includes an automated test suite. [Automated
+The Flood It application includes an automated test suite. [Automated
 tests][automated-tests] are programs that check that the application works by
 simulating input and checking output. They are not a replacement for manual
 testing by humans, but programs can test mundane, repetitive tasks much faster
@@ -392,24 +358,13 @@ tests.
 Running these tests is entirely optional, but it will make sure that everything
 is working properly, including that:
 
-- The application executes correctly with the Elixir and Erlang/OTP versions you
+- The application executes correctly with the Java Runtime Environment (JRE) you
   have installed.
-- The application can successfully connect to the database.
-- The structure of the database is correct (if you have run the database
-  migrations).
+- The application can successfully connect to and migrate the database.
 - The application behaves as specified.
 
 > :books: If you are curious, the source code for these tests is in [the `test`
-> directory](https://github.com/MediaComem/minesweeper/tree/main/test).
->
-> :books: Note that running the automated tests requires compiling the
-> application in test mode with `MIX_ENV=test mix compile`. You have already
-> compiled the application in the initial setup, but the compilation of Elixir
-> programs is done separately for each environment. This allows libraries to
-> behave differently depending on the environment, for example to optimize for
-> faster compilation and refresh time in development, or to optimize for low
-> memory and faster execution in production, or to enable special features
-> specifically for testing.
+> directory](https://github.com/MediaComem/floodit/tree/main/backend/src/main/test).
 
 ### :question: Optional: run the application in development mode
 
@@ -418,18 +373,14 @@ systemd service, nginx configuration and automated deployment, you can manually
 run the application in development mode to make sure it works. The [project's
 README][readme] explains how to do this.
 
-You can set the `http.port` parameter in the local configuration file or the
-`MINESWEEPER_HTTP_PORT` environment variable to `3001` for this simple test, as
+You can set the `FLOODIT_SERVER_PORT` environment variable or the `server.port`
+parameter in the local configuration file to `3001` for this simple test, as
 that is one of the ports that should be open in your server's firewall. Run the
 application on that port and visit http://W.X.Y.Z:3001 to check that it works
 (replacing `W.X.Y.Z` by your server's IP address). Stop the application by
-typing `Ctrl-C` **twice** once you are done.
+typing `Ctrl-C` once you are done.
 
-> :books: For your information, running the application in development mode will
-> use [Webpack], a static module bundler for JavaScript applications, to take
-> the [Alpine.js][alpinejs] frontend source files and assets in the `assets`
-> directory, and bundle them into the `priv/static` directory. You can see the
-> generated files with `ls priv/static`.
+TODO: explain frontend
 
 ### :exclamation: Run the application in production mode
 
@@ -439,51 +390,47 @@ in production mode.
 > :books: You will once again recompile the application, this time in production
 > mode.
 >
-> :books: To run an Elixir application in production, you must assemble a [Mix
-> release][mix-release]. This is basically the compiled application along with
-> the [Erlang/OTP][erlang] runtime, the [BEAM][beam], all packaged in a
-> directory which can be deployed anywhere. Actually, once you have created the
-> release, you could even copy it to a system where Elixir and Erlang are not
-> installed and run it there, as long as it uses the same architecture and
-> operating system as those it was compiled on.
+> :books: To run a Maven project in production, you must install it (i.e. the
+> `mvn clean install` command), which will create a JAR file.. This is basically
+> a ZIP file of the compiled Java application, which can be run by any Java
+> Virtual Machine (JVM). Once you have created that JAR file, you could copy it
+> to any system that has the Java Runtime Environment (JRE) and run it there.
+> The Java Development Kit (JDK) is only required to perform the compilation.
 >
-> :books: The `MIX_ENV=prod mix do frontend.build, phx.digest` command used in
-> the instructions bundles the frontend's files in production mode, compressing
-> and digesting them. To "digest" a web asset is to include a hash of its
-> contents in the filename [for the purposes of caching][webpack-caching]. This
-> optimizes the delivery of web assets to browsers especially when they come
-> back to your website after having already visited once.
+> :books: The `npm run build` command used in the instructions bundles the
+> frontend's files in production mode, compressing and digesting them. To
+> "digest" a web asset is to include a hash of its contents in the filename [for
+> the purposes of caching][webpack-caching]. This optimizes the delivery of web
+> assets to browsers especially when they come back to your website after having
+> already visited once.
 >
-> :books: You can list the `priv/static` directory to see the digested assets:
-> `ls priv/static`. Observe that a file named
-> `priv/static/favicon-a8ca4e3a2bb8fea46a9ee9e102e7d3eb.ico` (the hash may
-> differ) has appeared. The hash part of the filename
-> (`a8ca4e3a2bb8fea46a9ee9e102e7d3eb` in this case) depends on the content. When
-> the content changes, the hash changes. This means you can instruct client
-> browsers to cache web assets indefinitely, since you know that an asset's name
-> will not change as long as its content does not change as well and,
-> conversely, that an asset's name will always change if it has been modified.
+> :books: You can list the `frontend/dist` directory to see the digested assets:
+> `ls frontend/dist`. Observe that a file named `runtime.a185471aecb581c1.js`
+> (the hash may differ) has appeared. The hash part of the filename
+> (`a185471aecb581c1` in this case) depends on the content. When the content
+> changes, the hash changes. This means you can instruct client browsers to
+> cache web assets indefinitely, since you know that an asset's name will not
+> change as long as its content does not change as well and, conversely, that an
+> asset's name will always change if it has been modified.
 
 ## :exclamation: Create a systemd service
 
 Create and enable a systemd unit file like in the [systemd
-exercise][systemd-ex]. Make the necessary changes to run the Minesweeper
+exercise][systemd-ex]. Make the necessary changes to run the Flood It
 application instead of the PHP todolist.
 
 > - :gem: You will find the correct command to run the application in [the
 >   project's `README`][readme].
 >
->   Remember that systemd requires absolute paths to commands. The script to run
->   is not in your PATH, so you cannot use `which` to determine where it is, but
->   it's easy to determine its absolute path by combining the path to the
->   repository and the relative path to the script.
+>   Remember that systemd requires absolute paths to commands. You can use
+>   `which <command>` to determine where a command is.
 >
-> - :gem: You may need to set the `http.port` parameter in the local
->   configuration file or the `MINESWEEPER_HTTP_PORT` environment variable to
->   choose the port on which the application will listen. You can use the
->   publicly accessible 3001 port temporarily for testing, but you should use
->   another free port that is not exposed to complete the exercise, since one of
->   the requirements is to expose the application only through nginx.
+> - :gem: You may need to set the `FLOODIT_SERVER_PORT` environment variable or
+>   the `server.port` parameter in the local configuration file to choose the
+>   port on which the application will listen. You can use the publicly
+>   accessible 3001 port temporarily for testing, but you should use another
+>   free port that is not exposed to complete the exercise, since one of the
+>   requirements is to expose the application only through nginx.
 
 Once you have enabled and started the service, it should start automatically the
 next time you restart the server with `sudo reboot`.
@@ -499,7 +446,7 @@ Create an nginx proxy configuration to serve the application like in the [nginx
 PHP-FPM exercise][nginx-php-fpm-ex].
 
 The `root` directive in your nginx configuration should point to the
-`priv/static` directory in the repository since that is the directory that
+`frontend/dist` directory in the repository since that is the directory that
 contains the application's public web assets.
 
 > - :gem: Use an absolute path for the `root` directive.
@@ -531,54 +478,43 @@ Because the new directory is a fresh deployment, you may have to repeat part of
 the [initial setup][initial-setup] you performed in the original directory. The
 PostgreSQL user, database and extension have already been created, and your hook
 will handle most of the rest of the setup. But if you used the
-`config/local.exs` configuration file, you must copy it to the new deployment
-directory as well. You can use the `cp <source> <target>` command for this.
+`backend/config/application-default.local.yml` configuration file, you must copy
+it to the new deployment directory as well. You can use the `cp <source> <target>` command for this.
 
 Complete the `post-receive` hook. Compared to the PHP todolist, there are
 additional steps which must be performed in the script for the automated
 deployment to work correctly:
 
-- Backend and frontend dependencies must be updated in case there are new or
-  upgraded ones. The PHP todolist had no dependencies so you did not need to
-  do this.
-- The database must be migrated to take any new migrations into account.
-- The Alpine.js frontend must be rebuilt in case changes were made to the
+- Frontend dependencies must be updated in case there are new or upgraded ones.
+  The PHP todolist had no dependencies so you did not need to do this.
+
+  > :books: The backend dependencies of the Flood It application must also be
+  > updated, but Maven will do this for you automatically.
+
+- The Angular frontend must be rebuilt in case changes were made to the
   frontend source files.
-- The Elixir application must be recompiled and the release must be
-  reassembled in case changes were made to the backend source files.
-- The systemd service must be restarted with `systemctl`. (Unlike PHP, code
-  in most other languages is not reinterpreted on-the-fly; the service must
-  be restarted so that the program is reloaded into memory as a new process).
+- The backend application must be rebuilt in case changes were made to the
+  source files.
+- The systemd service must be restarted with `systemctl`.
+
+  > :books: Unlike PHP, code in most other languages is not reinterpreted
+  > on-the-fly; the service must be restarted so that the program is reloaded
+  > into memory as a new process).
 
 The [project's README][readme] explains how to do all of this except restarting
 the Systemd service, which you can easily do with `sudo systemctl restart <service>`. You should run the appropriate commands in your `post-receive` hook
 script.
 
-> :gem: In the automated deployment exercice, it is mentionned that the
-> application will no longer work after changing the path to the repository in
-> the nginx configuration. In the case of the Minesweeper application, it will
-> continue to work, because the application serves its static files on its own,
-> without nginx's help.
->
-> :books: When using `fastcgi_pass`, nginx is asking the PHP FastCGI Process
-> Manager (PHP-FPM) to find and execute the PHP files in the `root` directory
-> specified by the configuration. When you change that `root` to a directory
-> that is empty (at that stage in the exercise), it will not find the PHP files
-> anymore, and return a 404 Not Found error.
->
-> :books: When using `proxy_pass`, nginx is simply forwarding the request to the
-> given address and port. The Minesweeper application listens on that port and
-> is capable of serving its own files, regardless of nginx's configuration. So
-> the application will keep working even after changing the `root`.
-
 ### :gem: Allowing your user to restart the service without a password
 
 In order for the new `post-receive` hook to work, your user must be able to run
-`sudo systemctl restart minesweeper` (assuming you have named your service
-`minesweeper`) without entering a password, otherwise it will not work in a Git
-hook. This is because a Git hook is not an interactive program. You are not
-running it yourself, so you are not available to enter your password where
-prompted.
+`sudo systemctl restart floodit` (assuming you have named your service
+`floodit`) without entering a password, otherwise it will not work in a Git
+hook.
+
+> :books: This is because a Git hook is not an interactive program. You are not
+> running it yourself, so you are not available to enter your password where
+> prompted.
 
 If you are using the administrator user account that came with your Azure VM to
 run the application, it already has the right to use `sudo` without a password.
@@ -586,10 +522,10 @@ run the application, it already has the right to use `sudo` without a password.
 > :books: This has been automatically configured for you in the
 > `/etc/sudoers.d/90-cloud-init-users` file.
 
-### :space_invader: Allowing the dedicated `minesweeper` Unix user to control the Systemd service
+### :space_invader: Allowing the dedicated `floodit` Unix user to control the Systemd service
 
 If you are trying to complete the bonus challenge, you will need to allow the
-`minesweeper` user run the necessary `sudo systemctl ...` commands without a
+`floodit` user run the necessary `sudo systemctl ...` commands without a
 password as well.
 
 Make sure your default editor is `nano` (or whichever you are more comfortable
@@ -599,13 +535,13 @@ with):
 $> sudo update-alternatives --config editor
 ```
 
-When you created the `minesweeper` Unix user, your server created a
+When you created the `floodit` Unix user, your server created a
 corresponding Unix group with the same name by default. Now you will add a file
-in the `/etc/sudoers.d` directory to allow users in the `minesweeper` Unix group
+in the `/etc/sudoers.d` directory to allow users in the `floodit` Unix group
 to run some specific commands without a password.
 
 ```bash
-$> sudo visudo -f /etc/sudoers.d/minesweeper
+$> sudo visudo -f /etc/sudoers.d/floodit
 ```
 
 > :books: The [`visudo` command][visudo] allows you to edit the sudoers file in
@@ -616,10 +552,10 @@ $> sudo visudo -f /etc/sudoers.d/minesweeper
 Add the following line to the file:
 
 ```
-%minesweeper ALL=(ALL:ALL) NOPASSWD: /bin/systemctl restart minesweeper, /bin/systemctl status minesweeper, /bin/systemctl start minesweeper, /bin/systemctl stop minesweeper
+%floodit ALL=(ALL:ALL) NOPASSWD: /bin/systemctl restart floodit, /bin/systemctl status floodit, /bin/systemctl start floodit, /bin/systemctl stop floodit
 ```
 
-> :books: This line allows any user in the `minesweeper` group to execute the
+> :books: This line allows any user in the `floodit` group to execute the
 > listed commands with `sudo` without having to enter a password (hence the
 > `NOPASSWD` option).
 
@@ -627,14 +563,13 @@ Exit with `Ctrl-X` if you are using Nano or with Esc then `:wq` if you are using
 Vim.
 
 > :gem: If you are using nano, the filename you are asked to confirm will be
-> `/etc/sudoers.d/minesweeper.tmp` instead of `/etc/sudoers.d/minesweeper`. This
-> is normal, because `visudo` uses a temporary file to validate your changes
-> before saving the actual file. You may confirm without changes.
+> `/etc/sudoers.d/floodit.tmp` instead of `/etc/sudoers.d/floodit`. This is
+> normal, because `visudo` uses a temporary file to validate your changes before
+> saving the actual file. You may confirm without changes.
 
-You can test that it works by first switching to the `minesweeper` user with
-`sudo su - minesweeper` and then running `sudo systemctl status minesweeper`. It
-should run the command without asking you for any password (only for the
-specific commands listed in the file your created).
+You can test that it works by first switching to the `floodit` user with `sudo su - floodit` and then running `sudo systemctl status floodit`. It should run
+the command without asking you for any password (only for the specific commands
+listed in the file your created).
 
 ### :exclamation: Test the automated deployment
 
@@ -645,16 +580,16 @@ the automated deployment.
 Here's some visible changes you could easily make:
 
 - Change the [navbar title in the
-  `lib/minesweeper_web/templates/layout/app.html.eex`
-  file](https://github.com/MediaComem/minesweeper/blob/ca3e6fb2956afc751274ce2589ff9490c90c5e00/lib/minesweeper_web/templates/layout/app.html.eex#L13).
+  `frontend/src/app/layout/navbar/navbar.component.html`
+  file](https://github.com/AlphaHydrae/floodit/blob/04cf2bdad154aae574d974d7984d8d19e4dcb504/frontend/src/app/layout/navbar/navbar.component.html#L3).
 - Change the [difficulty levels in the
-  `lib/minesweeper_web/templates/home/index.html.eex`
-  file](https://github.com/MediaComem/minesweeper/blob/ca3e6fb2956afc751274ce2589ff9490c90c5e00/lib/minesweeper_web/templates/home/index.html.eex#L5-L8).
+  `frontend/src/app/pages/dashboard/dashboard.component.html`
+  file](https://github.com/AlphaHydrae/floodit/blob/04cf2bdad154aae574d974d7984d8d19e4dcb504/frontend/src/app/pages/dashboard/dashboard.component.html#L7-L38).
 
 ## :exclamation: Notify the teacher
 
-Send an email or a Teams message to the teacher **no later than January 13th
-2022** indicating that you have finished the exercise.
+Send an email or a Teams message to both teachers **no later than December 13th
+2022 at 23:59 CET** indicating that you have finished the exercise.
 
 ## :checkered_flag: What have I done?
 
@@ -667,9 +602,9 @@ This is a simplified architecture of the main running processes and
 communication flow at the end of this exercise (after completing [all previous
 course exercises][archidep-exercises]):
 
-![Simplified architecture](minesweeper-deployment-simplified.png)
+![Simplified architecture](floodit-deployment-simplified.png)
 
-> [Simplified architecture PDF version](minesweeper-deployment-simplified.pdf).
+> [Simplified architecture PDF version](floodit-deployment-simplified.pdf).
 
 ## :boom: Troubleshooting
 
@@ -680,38 +615,17 @@ Note that some of these errors can happen in various situations:
 - When systemd tries to start your service.
 - When your `post-receive` Git hook executes.
 
-### :boom: `Could not find a Mix.Project`
+### :boom: Maven command in wrong directory
 
-If you see an error message similar to this:
+TODO: attempt to run maven command in wrong directory
 
-```bash
-$> mix somecommand
-** (Mix) Could not find a Mix.Project, please ensure you are running Mix in a directory with a mix.exs file
-```
+### :boom: Spring Boot wrong directory
 
-You are probably executing a `mix` command (such as `mix deps.get` or `mix compile`) in the wrong directory. `mix`commands must generally be executed in a
-directory that contains a project's `mix.exs` file. This file describes project
-information required by the various `mix` commands, such as the list of
-dependencies to install or appropriate commands to run.
+TODO: attempt to run application in wrong directory
 
-In this exercise, you want to run `mix` commands in the directory where the
-Minesweeper application's files are located, i.e. the directory that you
-creating when cloning the repository.
+### :boom: `password authentication failed for user "floodit"`
 
-### :boom: `Note no mix.exs was found in the current directory`
-
-If you see an error message similar to this:
-
-```bash
-$> mix frontend.install
-** (Mix) The task "frontend.install" could not be found
-Note no mix.exs was found in the current directory
-```
-
-The problem is the same as the previous one. You are executing a `mix` command
-in the wrong directory.
-
-### :boom: `password authentication failed for user "minesweeper"`
+TODO: try using the wrong database connection configuration
 
 If you see an error similar to this when migrating the database or starting the
 application:
@@ -720,23 +634,25 @@ application:
 [error] Postgrex.Protocol (#PID<0.351.0>) failed to connect: ** (Postgrex.Error) FATAL 28P01 (invalid_password) password authentication failed for user "minesweeper"
 ```
 
-It means that the Minesweeper application or its database migration scripts
-cannot connect to the database:
+It means that the Flood It application or its database migration scripts cannot
+connect to the database:
 
 - Are you sure that you followed all the setup instructions and performed all
   necessary configuration?
-- Did you properly create the `minesweeper` PostgreSQL user and database?
-- Did you properly configure the database connection URL in the Minesweeper's
-  `config/local.exs` file or with the `$MINESWEEPER_DATABASE_URL` environment
-  variable?
+- Did you properly create the `floodit` PostgreSQL user and database?
+- Did you properly configure the database connection with the
+  `$FLOODIT_DATABASE_*` environment variable or via the
+  `backend/config/application-default.local.yml` file?
 
   Are you using the correct password?
 
 > Just like the PHP todolist required the correct configuration to successfully
-> connect to its MySQL database, the Minesweeper application also requires the
+> connect to its MySQL database, the Flood It application also requires the
 > correct configuration to connect to its PostgreSQL database.
 
 ### :boom: `:eaddrinuse (address already in use)`
+
+TODO: try to run the application on the same port twice
 
 If you see an error similar to this when running the application:
 
@@ -771,13 +687,13 @@ If you see an error similar to this when running the application:
 ```
 
 It means that there is already an application or other process listening on the
-port Minesweeper is trying to listen on (port `3000` by default). You should use
-the `http.port` parameter in the local configuration file or the
-`$MINESWEEPER_HTTP_PORT` environment variable to change the port, for example if
-you are trying to run the application in development mode:
+port Flood It is trying to listen on (port `3000` by default). You should use
+the `$FLOODIT_SERVER_PORT` environment variable or the `server.port` parameter
+in the local configuration file to change the port, for example if you are
+trying to run the application in development mode:
 
 ```bash
-$> MINESWEEPER_HTTP_PORT=4321 mix phx.server
+$> FLOODIT_SERVER_PORT=4321 mix phx.server
 ```
 
 ### :boom: `remote: sudo: no tty present and no askpass program specified`
@@ -789,28 +705,28 @@ remote: sudo: no tty present and no askpass program specified
 ```
 
 It means that you have created a dedicated Unix user but you have not performed
-the following step correctly: [Allowing the dedicated `minesweeper` Unix user to
+the following step correctly: [Allowing the dedicated `floodit` Unix user to
 control the Systemd
-service](#space_invader-allowing-the-dedicated-minesweeper-unix-user-to-control-the-systemd-service).
+service](#space_invader-allowing-the-dedicated-floodit-unix-user-to-control-the-systemd-service).
 
 Make sure that the list of authorized `systemctl` commands in the sudoers file
 match the name of your service (if you named your systemd configuration file
-something other than `minesweeper.service`, you must adapt the commands in the
-`/etc/sudoers.d/minesweeper` file to use the correct service name).
+something other than `floodit.service`, you must adapt the commands in the
+`/etc/sudoers.d/floodit` file to use the correct service name).
 
-> This error occurs because ordinarily, a Unix user does not have the right to
-> execute `sudo systemctl restart minesweeper` without entering their password
-> to gain administrative rights. A Git hook is executed in a non-interactive
-> context: it can only print information, and you cannot interact with it (e.g.
-> give it input) while it is running. This means that it cannot ask for your
-> password, so any `sudo` command will fail by default.
+> :books: This error occurs because ordinarily, a Unix user does not have the
+> right to execute `sudo systemctl restart floodit` without entering their
+> password to gain administrative rights. A Git hook is executed in a
+> non-interactive context: it can only print information, and you cannot
+> interact with it (e.g. give it input) while it is running. This means that it
+> cannot ask for your password, so any `sudo` command will fail by default.
 >
 > This is what the error message indicates: `no tty present` means that there is
 > no interactive terminal (`tty` comes from the terminology of the 1970s: it
 > means a **t**ele**ty**pewriter, which was one of the first terminals).
 >
 > The linked instructions above grant the user the right to execute specific
-> `sudo` commands (like `sudo systemctl restart minesweeper`) without having to
+> `sudo` commands (like `sudo systemctl restart floodit`) without having to
 > enter your password. Once that is done, these commands will work from the Git
 > hook as well.
 
@@ -838,14 +754,14 @@ Are you sure that your nginx configuration, namely the proxy address, is
 correct? Check to make sure you are using the correct address and port. Is your
 application actually listening on that port?
 
-### :boom: I forgot to fork the Minesweeper repository and I have already cloned it
+### :boom: I forgot to fork the Flood It repository and I have already cloned it
 
 You may have cloned the exercise's repository directly:
 
 ```bash
 $> git remote -v
-origin  https://github.com/MediaComem/minesweeper.git (fetch)
-origin  https://github.com/MediaComem/minesweeper.git (push)
+origin  https://github.com/MediaComem/floodit.git (fetch)
+origin  https://github.com/MediaComem/floodit.git (push)
 ```
 
 Then you won't have push access because this repository does not belong to you.
@@ -854,36 +770,36 @@ command in your clone's directory on the server (replacing `MyGitHubUser` with
 your GitHub username):
 
 ```bash
-$> git remote set-url origin https://github.com/MyGitHubUser/minesweeper.git
+$> git remote set-url origin https://github.com/MyGitHubUser/floodit.git
 ```
 
-### :boom: I don't remember the password I used for the `minesweeper` PostgreSQL user
+### :boom: I don't remember the password I used for the `floodit` PostgreSQL user
 
 You can change it with the following command:
 
 ```bash
-$> sudo -u postgres psql -c '\password minesweeper'
+$> sudo -u postgres psql -c '\password floodit'
 ```
 
 ### :boom: System debugging
 
-You can display the last few lines of the logs of your `minesweeper` Systemd
+You can display the last few lines of the logs of your `floodit` Systemd
 service with the following command:
 
 ```bash
-$> sudo systemctl status minesweeper
+$> sudo systemctl status floodit
 ```
 
 If you need more details, you can display the full logs with the following
 command:
 
 ```bash
-$> sudo journalctl -u minesweeper
+$> sudo journalctl -u floodit
 ```
 
 > :gem: You can scroll in `journalctl` logs using the up/down arrow keys, jump
-> directly to the bottom with Shift-G (uppercase G), or back to the top with g
-> (lowercase g).
+> directly to the bottom with `Shift-G` (uppercase G), or back to the top with
+> `G` (lowercase g). Exit with `Q` or `Ctrl-C`.
 
 If the application does not seem to work after running the Systemd service,
 there might be an error message in these logs that can help you identify the
@@ -901,7 +817,7 @@ You can connect to a database with the following command:
 
 ```bash
 $> sudo -u postgresql psql <database-name>
-minesweeper=#
+floodit=#
 ```
 
 Note that the prompt has changed, because you are now connected to the
@@ -911,16 +827,18 @@ list the tables in the current database and count the number of rows in the
 `games` table:
 
 ```
-minesweeper=# \d
-                List of relations
- Schema |       Name        | Type  |    Owner
---------+-------------------+-------+-------------
- public | games             | table | minesweeper
- public | moves             | table | minesweeper
- public | schema_migrations | table | minesweeper
-(3 rows)
+floodit=# \d
+                 List of relations
+ Schema |         Name          |   Type   | Owner
+--------+-----------------------+----------+--------
+ public | flyway_schema_history | table    | floodit
+ public | games                 | table    | floodit
+ public | games_id_seq          | sequence | floodit
+ public | moves                 | table    | floodit
+ public | moves_id_seq          | sequence | floodit
+(5 rows)
 
-minesweeper=# select count(*) from games;
+floodit=# select count(*) from games;
  count
 -------
      2
@@ -928,37 +846,6 @@ minesweeper=# select count(*) from games;
 ```
 
 Run the `exit` command when you are done to exit the PostgreSQL console.
-
-### :boom: `(BadArityError) &Function.identity/1 with arity 1 called with 2 arguments`
-
-If you see an error similar to this:
-
-```
-** (BadArityError) &Function.identity/1 with arity 1 called with 2 arguments ("ecto://minesweeper:password@localhost/minesweeper", "MINESWEEPER_DATABASE_URL")
-    (minesweeper 1.0.0) lib/minesweeper/config.ex:60: Minesweeper.Config.env_config_value!/3
-    (stdlib 3.16.1) erl_eval.erl:685: :erl_eval.do_apply/6
-    (stdlib 3.16.1) erl_eval.erl:893: :erl_eval.expr_list/6
-    (stdlib 3.16.1) erl_eval.erl:237: :erl_eval.expr/5
-    (stdlib 3.16.1) erl_eval.erl:229: :erl_eval.expr/5
-    (stdlib 3.16.1) erl_eval.erl:893: :erl_eval.expr_list/6
-    (stdlib 3.16.1) erl_eval.erl:408: :erl_eval.expr/5
-    (elixir 1.12.3) lib/code.ex:656: Code.eval_string_with_error_handling/3
-    (elixir 1.12.3) lib/config.ex:258: Config.__eval__!/3
-    (elixir 1.12.3) lib/config/reader.ex:86: Config.Reader.read!/2
-    (mix 1.12.3) lib/mix/tasks/loadconfig.ex:57: Mix.Tasks.Loadconfig.load_runtime/1
-    (mix 1.12.3) lib/mix/tasks/app.config.ex:38: Mix.Tasks.App.Config.run/1
-    (mix 1.12.3) lib/mix/task.ex:394: anonymous fn/3 in Mix.Task.run_task/3
-    (mix 1.12.3) lib/mix/tasks/app.start.ex:46: Mix.Tasks.App.Start.run/1
-    (mix 1.12.3) lib/mix/task.ex:394: anonymous fn/3 in Mix.Task.run_task/3
-    (mix 1.12.3) lib/mix/tasks/run.ex:129: Mix.Tasks.Run.run/5
-    (mix 1.12.3) lib/mix/tasks/run.ex:86: Mix.Tasks.Run.run/1
-    (mix 1.12.3) lib/mix/task.ex:394: anonymous fn/3 in Mix.Task.run_task/3
-```
-
-It means that you have encountered a bug that was present in the original
-version of the exercise and that has been fixed since. You should follow the
-instructions on [how to update your fork of the
-repository](#boom-updating-your-fork-of-the-repository).
 
 ### :boom: Updating your fork of the repository
 
@@ -969,14 +856,14 @@ fork of the repository. You can follow this procedure to update it.
 **On your local machine:**
 
 ```bash
-# Clone your fork of the Minesweeper repository on your local machine (replace
+# Clone your fork of the Flood It repository on your local machine (replace
 # MyGitHubUser by your GitHub username)
 cd /path/to/projects
-git clone git@github.com:MyGitHubUser/minesweeper.git
-cd minesweeper
+git clone git@github.com:MyGitHubUser/floodit.git
+cd floodit
 
 # Add a remote to the original repository
-git remote add upstream https://github.com/MediaComem/minesweeper.git
+git remote add upstream https://github.com/MediaComem/floodit.git
 
 # Fetch the latest changes from all remotes
 git fetch --all
@@ -995,63 +882,12 @@ Otherwise if you have cloned the repository on your server, you should also
 update it. **Connect to your server** and run the following commands:
 
 ```bash
-# Move into the minesweeper repository you have cloned
-cd minesweeper
+# Move into the floodit repository you have cloned
+cd floodit
 
 # Pull the latest changes
 git pull
 ```
-
-### :boom: `Error: error:0308010C:digital envelope routines::unsupported`
-
-If you see an error similar to this when building the frontend in development or
-production mode:
-
-```bash
-node:internal/crypto/hash:67
-  this[kHandle] = new _Hash(algorithm, xofLen);
-                  ^
-
-Error: error:0308010C:digital envelope routines::unsupported
-    at new Hash (node:internal/crypto/hash:67:19)
-    at Object.createHash (node:crypto:130:10)
-    at BulkUpdateDecorator.hashFactory (/home/john_doe/minesweeper/assets/node_modules/webpack/lib/util/createHash.js:145:18)
-    at BulkUpdateDecorator.update (/home/john_doe/minesweeper/assets/node_modules/webpack/lib/util/createHash.js:46:50)
-    at RawSource.updateHash (/home/john_doe/minesweeper/assets/node_modules/webpack/node_modules/webpack-sources/lib/RawSource.js:77:8)
-    at NormalModule._initBuildHash (/home/john_doe/minesweeper/assets/node_modules/webpack/lib/NormalModule.js:888:17)
-    at handleParseResult (/home/john_doe/minesweeper/assets/node_modules/webpack/lib/NormalModule.js:954:10)
-    at /home/john_doe/minesweeper/assets/node_modules/webpack/lib/NormalModule.js:1048:4
-    at processResult (/home/john_doe/minesweeper/assets/node_modules/webpack/lib/NormalModule.js:763:11)
-    at /home/john_doe/minesweeper/assets/node_modules/webpack/lib/NormalModule.js:827:5 {
-  opensslErrorStack: [ 'error:03000086:digital envelope routines::initialization error' ],
-  library: 'digital envelope routines',
-  reason: 'unsupported',
-  code: 'ERR_OSSL_EVP_UNSUPPORTED'
-}
-```
-
-It means you have not correctly installed the [requirements described in the
-project's README](https://github.com/MediaComem/minesweeper#requirements).
-
-The chapter on [how to check that everything has been correctly
-installed](#question-check-that-everything-has-been-correctly-installed) should
-help you.
-
-### :boom: `(Mix) Could not compile dependency :cowlib`
-
-If you see an error similar to this:
-
-```
-===> Compiling cowlib
-Killed
-** (Mix) Could not compile dependency :cowlib, "/home/john_doe/.mix/rebar3 bare compile --paths /home/john_doe/minesweeper/_build/dev/lib/*/ebin" command failed. Errors may have been logged above. You can recompile this dependency with "mix deps.compile cowlib", update it with "mix deps.update cowlib" or clean it with "mix deps.clean cowlib"
-```
-
-It might mean your server does not have enough memory (RAM) to perform the
-compilation of some dependencies. Adding a few gigabytes of swap space should solve
-the issue. Follow the instructions in the sysadmin cheatsheet to do so:
-
-- [Add swap space to your cloud server](../SYSADMIN-CHEATSHEET.md#add-swap-space-to-your-cloud-server)
 
 ### :boom: `Error creating new order :: too many certificates already issued for: archidep.ch`
 
@@ -1066,7 +902,7 @@ Plugins selected: Authenticator nginx, Installer nginx
 Which names would you like to activate HTTPS for?
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 1: clock.john-doe.archidep.ch
-2: minesweeper.john-doe.archidep.ch
+2: floodit.john-doe.archidep.ch
 3: todolist.john-doe.archidep.ch
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Select the appropriate numbers separated by commas and/or spaces, or leave input
@@ -1126,34 +962,23 @@ Unlike with Apache & PHP, Elixir code (or Ruby code, or Python code, etc) is not
 reloaded automatically on each request. You must _also restart the application_
 to take your changes into account.
 
-[app-config]: https://github.com/MediaComem/minesweeper#configuration
-[app-deps]: https://github.com/MediaComem/minesweeper/blob/ca3e6fb2956afc751274ce2589ff9490c90c5e00/mix.exs#L40-L57
 [angular]: https://angular.io
 [archidep-exercises]: https://github.com/MediaComem/comem-archidep#exercises
 [auto-deploy-ex]: https://github.com/MediaComem/comem-archidep/blob/master/ex/git-automated-deployment.md
 [automated-deployment-nginx-update]: https://github.com/MediaComem/comem-archidep/blob/master/ex/git-automated-deployment.md#update-the-todolist-nginx-configuration
 [automated-tests]: https://en.wikipedia.org/wiki/Test_automation
-[beam]: https://en.wikipedia.org/wiki/BEAM_(Erlang_virtual_machine)
 [certbot-ex]: certbot-deployment.md
 [composer]: https://getcomposer.org
-[eloquent]: https://laravel.com/docs/8.x/eloquent
 [fork]: https://docs.github.com/en/get-started/quickstart/fork-a-repo
-[hex]: https://hex.pm
 [http-502]: https://httpstatuses.com/502
-[initial-setup]: https://github.com/MediaComem/minesweeper#initial-setup
+[initial-setup]: https://github.com/MediaComem/floodit#initial-setup
 [java]: https://www.oracle.com/java/
 [js]: https://en.wikipedia.org/wiki/JavaScript
 [jvm]: https://en.wikipedia.org/wiki/Java_virtual_machine
 [laravel]: https://laravel.com
-[make]: https://www.gnu.org/software/make/
-[mix]: https://hexdocs.pm/mix/Mix.html
-[mix-compile]: https://hexdocs.pm/mix/1.12/Mix.Tasks.Compile.html
-[mix-deps-get]: https://hexdocs.pm/mix/1.12/Mix.Tasks.Deps.Get.html
-[mix-ecto-migrate]: https://hexdocs.pm/ecto_sql/Mix.Tasks.Ecto.Migrate.html
-[mix-phx-digest]: https://hexdocs.pm/phoenix/Mix.Tasks.Phx.Digest.html
-[mix-release]: https://hexdocs.pm/mix/1.12/Mix.Tasks.Release.html
 [mvc]: https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller
 [mvn]: https://maven.apache.org
+[mvn-central]: https://search.maven.org
 [nginx-php-fpm-ex]: nginx-php-fpm-deployment.md
 [nginx-proxy-pass]: http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_pass
 [nginx-rp-conf]: https://mediacomem.github.io/comem-archidep/2020-2021/subjects/reverse-proxy/?home=MediaComem%2Fcomem-archidep%23readme#29
@@ -1166,7 +991,6 @@ to take your changes into account.
 [orm]: https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping
 [php]: https://www.php.net
 [postgres]: https://www.postgresql.org
-[postgres-uuid-ossp]: https://www.postgresql.org/docs/current/uuid-ossp.html
 [spring]: https://spring.io
 [spring-boot]: https://spring.io/projects/spring-boot
 [readme]: https://github.com/MediaComem/floodit#readme
@@ -1174,7 +998,6 @@ to take your changes into account.
 [sun]: https://en.wikipedia.org/wiki/Sun_Microsystems
 [systemd-ex]: systemd-deployment.md
 [url]: https://en.wikipedia.org/wiki/URL#Syntax
-[uuid]: https://en.wikipedia.org/wiki/Universally_unique_identifier
 [visudo]: https://linux.die.net/man/8/visudo
 [webpack]: https://webpack.js.org
 [webpack-caching]: https://webpack.js.org/guides/caching/
