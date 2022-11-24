@@ -22,6 +22,7 @@
     "check": "npm run --workspace backend check",
     "check:write": "npm run --workspace backend check:write",
     "doctoc": "doctoc --github --notitle README.md && prettier --write README.md",
+    "start": "npm run --workspace frontend start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "workspaces": [
