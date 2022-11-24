@@ -507,10 +507,14 @@ should be able to visit http://W.X.Y.Z:3001 to check that the application works
 (replacing `W.X.Y.Z` by your server's IP address). Stop both components by
 typing `Ctrl-C` once you are done.
 
+TODO: explain development mode architecture
+
 ### :exclamation: Run the application in production mode
 
 Follow the instructions in the [project's README][readme] to run the application
 in production mode.
+
+TODO: explain production mode architecture
 
 > :books: To run a Maven project in production, you must install it (i.e. the
 > `mvn clean install` command), which will create a JAR file.. This is basically
