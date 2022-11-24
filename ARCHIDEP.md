@@ -73,6 +73,15 @@ Parts of this guide are annotated with the following icons:
 The application you must deploy is a small web game. Its code is [available on
 GitHub][repo].
 
+It has two components: a [backend and a frontend][frontend-and-backend]:
+
+- The backend is a [Java][java] web application that handles data access
+  (starting games, playing moves, etc) through a [JSON][json] [API][api]. It
+  provides no [User Interface (UI)][ui].
+- The frontend is an HTML, JavaScript & CSS [Single-Page Application (SPA)][spa]
+  that provides the [Graphical User Interface (GUI)][gui]. It makes [AJAX
+  requests][ajax] to the backend.
+
 ### :books: What the hell are Spring Boot & Angular?
 
 The application uses the following ~~buzzword salad~~ technologies:
@@ -91,6 +100,10 @@ The application uses the following ~~buzzword salad~~ technologies:
 - The frontend has been developed with [Angular][angular], a [JavaScript][js]
   application-design framework and development platform for creating efficient
   and sophisticated single-page apps.
+
+  It also uses [Tailwind][tailwind], a utility-first CSS framework packed with
+  classes that can be composed to build any design, directly in your markup.
+
 - [PostgreSQL][postgres] is a powerful, open source object-relational database
   system with over 30 years of active development that has earned it a strong
   reputation for reliability, feature robustness, and performance.
@@ -108,24 +121,20 @@ database server, PHP-FPM, the PHP todolist and the Flood It application,
 mainly because MySQL unfortunately consumes a lot of memory for such a small
 server.
 
-To be safe, you should temporarily stop and disable MySQL with the following
-commands:
+Make sure that you have added enough memory [swap
+space](https://web.mit.edu/rhel-doc/5/RHEL-5-manual/Deployment_Guide-en-US/ch-swapspace.html)
+by displaying available memory with the `free -h` command. There should be a
+"Swap" line indicating that you have `2.0Gi` of swap space:
 
 ```bash
-$> sudo systemctl stop mysql
-$> sudo systemctl disable mysql
+$> free -h
+               total        used        free      shared  buff/cache   available
+Mem:           906Mi       162Mi       471Mi       5.0Mi       272Mi       592Mi
+Swap:          2.0Gi       797Mi       1.2Gi
 ```
 
-Note that this will temporarily break the PHP todolist.
-
-You can also stop, disable and remove the following programs which are not
-required for this course, saving some more memory:
-
-```bash
-$> sudo systemctl stop gdm
-$> sudo systemctl disable gdm
-$> sudo apt remove snapd --purge
-```
+If there is no "Swap" line or it indicates no available swap or less than 2 GB,
+follow [this guide][linux-add-swap].
 
 ## :warning: A note about the project's documentation
 
@@ -171,8 +180,6 @@ described in the [project's README][readme] on your server:
 
   You should install a package named `openjdk-<version>-jdk` where `<version>`
   is the Java version required by the Flood It application.
-
-  > :books: TODO: jre vs jdk
 
 - **How to install Maven:** follow these instructions to [**Install Maven on
   Ubuntu with apt**](https://phoenixnap.com/kb/install-maven-on-ubuntu)
@@ -298,29 +305,51 @@ described in the [project's README][readme] on your server:
 You must perform the **initial setup** instructions indicated in the [project's
 README][readme].
 
-:warning: Since you will need to commit and push changes later, **do not** clone
-the `https://github.com/MediaComem/floodit.git` repository as indicated in the
-README. **Use your own fork's HTTPS clone URL**.
+:warning: Since you will need to commit and push changes later, **do not** use
+the `https://github.com/MediaComem/floodit.git` URL to clone the repository as
+suggested in the README. **Use your own fork's HTTPS clone URL**.
 
-> - :gem: The Flood It application has two configuration mechanisms: environment
->   variables or a local configuration file. You can use either one of them. It
->   does not matter which you choose. Both are equally valid way of configuring
->   the application.
+> - :gem: When you reach the step where you need to "Configure the application",
+>   you will see that the Flood It application has two configuration mechanisms:
+>   environment variables or a local configuration file. You can use either one
+>   of them. It does not matter which you choose. Both are equally valid way of
+>   configuring the application.
 >
->   If you choose to use environment variables as you have done with the PHP
->   todolist, you will need to provide these environment variables through
->   Systemd later.
->
->   The `export` sample commands provided in the README are only examples and
->   will only set the variables in the shell/SSH session where you run them. You
->   will need to run them again in each new shell. To run the application in
->   production mode, you will need to provide the variables through Systemd.
+>   If you choose to use environment variables, you will need to provide these
+>   environment variables through Systemd later, as you have done with the PHP
+>   todolist. The `export` sample commands provided in the README are only
+>   examples and will only set the variables in the shell and SSH session where
+>   you run them.
 
 ### :books: What sorcery is this?
 
-:books: The setup instructions use the `createuser` and `createdb` commands.
-These commands are binaries that come with the PostgreSQL server and can be used
-to manage PostgreSQL users and databases on the command line:
+Read this section if you want to understand what you have done/installed so far.
+
+#### :books: The Java Virtual Machine (JVM), Java Runtime Environment (JRE) and Java Development Kit (JDK)
+
+The backend of the Flood It application is written in Java.
+
+When you write a program in Java, your source code is compiled to produce [byte
+code][java-byte-code] that can be run in a [Java Virtual Machine (JVM)][jvm].
+This is what makes Java [cross-platform][cross-platform]: any system that has a
+JVM can run Java byte code compiled on any other system. There are JVM
+implementations for all major operating systems and processor architectures.
+
+The [Java Runtime Environment (JRE)][java-jdk-jre] is a software package that
+you can install on your favorite operating system (e.g. Linux, macOS, Windows)
+that provides a JVM. It contains everything you need to run already compiled
+Java programs (i.e. Java byte code, often distributed in the form of [JAR
+files][jar]).
+
+The [Java Development Kit (JDK)][jdk] is a software development kit that
+includes the JRE but also everything you need to compile Java programs into Java
+byte code. You will use it to compile the backend of the Flood It application.
+
+#### :books: The PostgreSQL `createuser` and `createdb` commands
+
+The setup instructions use the `createuser` and `createdb` commands. These
+commands are binaries that come with the PostgreSQL server and can be used to
+manage PostgreSQL users and databases on the command line:
 
 - The **`createuser --interactive --pwprompt floodit` command** creates a
   PostgreSQL user named "floodit" and asks you to define a password for that
@@ -341,8 +370,7 @@ to manage PostgreSQL users and databases on the command line:
   ...
   ```
 
-:books: These database setup commands are equivalent to [part of the
-`todolist.sql`
+These database setup commands are equivalent to [part of the `todolist.sql`
 script](https://github.com/MediaComem/comem-archidep-php-todo-exercise/blob/5d46e9fcf974d3d74d5eec838c512798f02581e1/todolist.sql#L1-L8)
 you executed when first deploying the PHP todolist.
 
@@ -357,8 +385,10 @@ when you installed PostgreSQL and has administrative privileges on the entire
 PostgreSQL cluster. You can verify the existence of this user with the command
 `cat /etc/passwd | grep postgres`.
 
-:books: The setup instructions use the **`mvn` command**. [Maven][mvn] is a
-software project management tool for the [Java][java] ecosystem, much like
+#### :books: The `mvn` command
+
+The setup instructions use the **`mvn` command**. [Maven][mvn] is a software
+project management tool for the [Java][java] ecosystem, much like
 [Composer][composer] for [PHP][php] or [npm][npm] for [Node.js][node].
 
 - A Maven project has one or several Project Object Model (POM) files. These
@@ -379,12 +409,26 @@ software project management tool for the [Java][java] ecosystem, much like
     Machine bytecode).
   - Install the application into the local Maven repository.
 
-- TODO: explain other Java commands
+#### :books: Node.js
 
-:books: The configuration you are instructed to perform either through
-environment variables or through the
-`backend/config/application-default.local.yml` file is equivalent to the
-[configuration of the PHP
+[Node.js][node] is an open-source, cross-platform JavaScript runtime
+environment. Where JavaScript was traditionally run in a browser, Node.js allows
+you to run JavaScript code on any machine, like on your Azure VM, just like you
+would any other dynamic programming language like PHP, Ruby or Python.
+
+#### :books: The `npm` command
+
+The setup instructions use the **`npm` command**. [npm][npm] is the world's
+largest software registry for the [JavaScript][js] and [Node.js][node]
+ecosystems. The `npm` command can be used to install and manage JavaScript
+packages, much like [Composer][composer] for [PHP][php] or [Maven][mvn] for
+[Java][java]
+
+#### :books: The configuration of the Flood It application
+
+The configuration you are instructed to perform either through environment
+variables or through the `backend/config/application-default.local.yml` file is
+equivalent to the [configuration of the PHP
 todolist](https://github.com/MediaComem/comem-archidep-php-todo-exercise/blob/5d46e9fcf974d3d74d5eec838c512798f02581e1/index.php#L3-L15)
 which you improved during the course using environment variables. It is not
 uncommon for applications to provide multiple configuration mechanisms, letting
@@ -695,87 +739,137 @@ Note that some of these errors can happen in various situations:
 
 ### :boom: Daemons using outdated libraries
 
-TODO: get screenshot from vlr
+When you install a package with APT (e.g. MySQL), it _may_ prompt you to
+reboot and/or to restart outdated daemons (i.e. background services):
 
-### :boom: Maven command in wrong directory
+![Restart outdated daemons](../images/apt-outdated-daemons.png)
 
-TODO: attempt to run maven command in wrong directory
+Simply select "Ok" by pressing the Tab key, then press Enter to confirm.
 
-### :boom: Spring Boot wrong directory
+> :books: This happens because most recent Linux versions have [unattended
+> upgrades](linux-unattended-upgrades): a tool that automatically installs daily
+> security upgrades on your server without human intervention. Sometimes, some
+> of the background services running on your server may need to be restarted for
+> these upgrades to be applied.
+>
+> Since you are installing a new background service (the MySQL server) which
+> must be started, APT asks whether you want to apply upgrades to other
+> background services by restarting them. Rebooting your server would also have
+> the effect of restarting these services and applying the security upgrades.
 
-TODO: attempt to run application in wrong directory
+### :boom: No plugin found for prefix 'spring-boot' in the current project
 
-### :boom: `password authentication failed for user "floodit"`
-
-TODO: try using the wrong database connection configuration
-
-If you see an error similar to this when migrating the database or starting the
-application:
+If you get an error similar to this when running the `mvn` command:
 
 ```
-[error] Postgrex.Protocol (#PID<0.351.0>) failed to connect: ** (Postgrex.Error) FATAL 28P01 (invalid_password) password authentication failed for user "minesweeper"
+$> mvn spring-boot:run
+[INFO] Scanning for projects...
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/mojo/maven-metadata.xml
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-metadata.xml
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/plugins/maven-metadata.xml (14 kB at 26 kB/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/mojo/maven-metadata.xml (21 kB at 36 kB/s)
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.467 s
+[INFO] Finished at: 2022-11-24T11:27:45Z
+[INFO] ------------------------------------------------------------------------
+[ERROR] No plugin found for prefix 'spring-boot' in the current project and in the plugin groups [org.apache.maven.plugins, org.codehaus.mojo] available from the repositories [local (/home/john_doe/.m2/repository), central (https://repo.maven.apache.org/maven2)] -> [Help 1]
+[ERROR]
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR]
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/NoPluginFoundForPrefixException
 ```
 
-It means that the Flood It application or its database migration scripts cannot
-connect to the database:
+It means that you are running the command in the wrong directory. Maven requires
+a `pom.xml` file to know what to do. You must be sure to run the `mvn` command
+in a directory that contains this `pom.xml` file, i.e. in the repository of the
+Flood It application that you cloned.
+
+### :boom: FATAL: password authentication failed for user "floodit"
+
+If you see an error similar to this when starting the application or running the
+automated tests:
+
+```
+SQL State  : 28P01
+Error Code : 0
+Message    : FATAL: password authentication failed for user "floodit"
+
+        at org.flywaydb.core.internal.jdbc.JdbcUtils.openConnection(JdbcUtils.java:60) ~[flyway-core-8.5.13.jar:na]
+        at org.flywaydb.core.internal.jdbc.JdbcConnectionFactory.<init>(JdbcConnectionFactory.java:75) ~[flyway-core-8.5.13.jar:na]
+        at org.flywaydb.core.FlywayExecutor.execute(FlywayExecutor.java:147) ~[flyway-core-8.5.13.jar:na]
+        at org.flywaydb.core.Flyway.migrate(Flyway.java:124) ~[flyway-core-8.5.13.jar:na]
+        at org.springframework.boot.autoconfigure.flyway.FlywayMigrationInitializer.afterPropertiesSet(FlywayMigrationInitializer.java:66) ~[spring-boot-autoconfigure-2.7.4.jar:2.7.4]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1863) ~[spring-beans-5.3.23.jar:5.3.23]
+        at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1800) ~[spring-beans-5.3.23.jar:5.3.23]
+        ... 18 common frames omitted
+Caused by: org.postgresql.util.PSQLException: FATAL: password authentication failed for user "floodit"
+        at org.postgresql.core.v3.ConnectionFactoryImpl.doAuthentication(ConnectionFactoryImpl.java:646) ~[postgresql-42.3.7.jar:42.3.7]
+        at org.postgresql.core.v3.ConnectionFactoryImpl.tryConnect(ConnectionFactoryImpl.java:180) ~[postgresql-42.3.7.jar:42.3.7]
+        at org.postgresql.core.v3.ConnectionFactoryImpl.openConnectionImpl(ConnectionFactoryImpl.java:235) ~[postgresql-42.3.7.jar:42.3.7]
+        at org.postgresql.core.ConnectionFactory.openConnection(ConnectionFactory.java:49) ~[postgresql-42.3.7.jar:42.3.7]
+        at org.postgresql.jdbc.PgConnection.<init>(PgConnection.java:223) ~[postgresql-42.3.7.jar:42.3.7]
+        at org.postgresql.Driver.makeConnection(Driver.java:402) ~[postgresql-42.3.7.jar:42.3.7]
+        at org.postgresql.Driver.connect(Driver.java:261) ~[postgresql-42.3.7.jar:42.3.7]
+        at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:138) ~[HikariCP-4.0.3.jar:na]
+        at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:364) ~[HikariCP-4.0.3.jar:na]
+        at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:206) ~[HikariCP-4.0.3.jar:na]
+        at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:476) ~[HikariCP-4.0.3.jar:na]
+        at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:561) ~[HikariCP-4.0.3.jar:na]
+        at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:115) ~[HikariCP-4.0.3.jar:na]
+        at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:112) ~[HikariCP-4.0.3.jar:na]
+        at org.flywaydb.core.internal.jdbc.JdbcUtils.openConnection(JdbcUtils.java:48) ~[flyway-core-8.5.13.jar:na]
+        ... 24 common frames omitted
+```
+
+It means that the Flood It application or its automated tests cannot connect to
+the database:
 
 - Are you sure that you followed all the setup instructions and performed all
   necessary configuration?
 - Did you properly create the `floodit` PostgreSQL user and database?
-- Did you properly configure the database connection with the
-  `$FLOODIT_DATABASE_*` environment variable or via the
-  `backend/config/application-default.local.yml` file?
-
-  Are you using the correct password?
+- If you are attempting to run the application in development mode, did you
+  properly configure the database connection with the `$FLOODIT_DATABASE_*`
+  environment variable or via the `backend/config/application-default.local.yml`
+  file?
+- If you are attempting to run the automated tests, did you properly configure
+  the database connection with the `$FLOODIT_TEST_DATABASE_*` environment
+  variable or via the `backend/config/application-test.local.yml` file?
+- Are you using the correct password?
 
 > Just like the PHP todolist required the correct configuration to successfully
 > connect to its MySQL database, the Flood It application also requires the
 > correct configuration to connect to its PostgreSQL database.
 
-### :boom: `:eaddrinuse (address already in use)`
-
-TODO: try to run the application on the same port twice
+### :boom: Web server failed to start. Port 5000 was already in use.
 
 If you see an error similar to this when running the application:
 
 ```
-[error] Failed to start Ranch listener MinesweeperWeb.Endpoint.HTTP in :ranch_tcp:listen([cacerts: :..., key: :..., cert: :..., port: 3000]) for reason :eaddrinuse (address already in use)
+***************************
+APPLICATION FAILED TO START
+***************************
 
-[notice] Application minesweeper exited: Minesweeper.Application.start(:normal, []) returned an error: shutdown: failed to start child: MinesweeperWeb.Endpoint
-    ** (EXIT) shutdown: failed to start child: {:ranch_listener_sup, MinesweeperWeb.Endpoint.HTTP}
-        ** (EXIT) shutdown: failed to start child: :ranch_acceptors_sup
-            ** (EXIT) {:listen_error, MinesweeperWeb.Endpoint.HTTP, :eaddrinuse}
-[notice] Application phoenix_live_reload exited: :stopped
-[notice] Application file_system exited: :stopped
-[notice] Application plug_cowboy exited: :stopped
-[notice] Application cowboy_telemetry exited: :stopped
-[notice] Application cowboy exited: :stopped
-[notice] Application ranch exited: :stopped
-[notice] Application cowlib exited: :stopped
-[notice] Application jason exited: :stopped
-[notice] Application phoenix_html exited: :stopped
-[notice] Application postgrex exited: :stopped
-[notice] Application ecto_sql exited: :stopped
-[notice] Application db_connection exited: :stopped
-[notice] Application connection exited: :stopped
-[notice] Application phoenix_ecto exited: :stopped
-[notice] Application ecto exited: :stopped
-[notice] Application decimal exited: :stopped
-[notice] Application runtime_tools exited: :stopped
-** (Mix) Could not start application minesweeper: Minesweeper.Application.start(:normal, []) returned an error: shutdown: failed to start child: MinesweeperWeb.Endpoint
-    ** (EXIT) shutdown: failed to start child: {:ranch_listener_sup, MinesweeperWeb.Endpoint.HTTP}
-        ** (EXIT) shutdown: failed to start child: :ranch_acceptors_sup
-            ** (EXIT) {:listen_error, MinesweeperWeb.Endpoint.HTTP, :eaddrinuse}
+Description:
+
+Web server failed to start. Port 5000 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 5000 or configure this application to listen on another port.
 ```
 
 It means that there is already an application or other process listening on the
-port Flood It is trying to listen on (port `5000` by default). You should use
-the `$FLOODIT_SERVER_PORT` environment variable or the `server.port` parameter
-in the local configuration file to change the port, for example if you are
-trying to run the application in development mode:
+port the Flood It backend is trying to listen on (port `5000` by default). You
+should use the `$FLOODIT_SERVER_PORT` environment variable or the `server.port`
+parameter in the local configuration file to change the port, for example if you
+are trying to run the application in development mode:
 
 ```bash
-$> FLOODIT_SERVER_PORT=5001 mix phx.server
+$> FLOODIT_SERVER_PORT=5001 mvn spring-boot:run
 ```
 
 ### :boom: `remote: sudo: no tty present and no askpass program specified`
@@ -1024,40 +1118,32 @@ You can then connect to your server and perform the following actions:
 > Please notify the teacher immediately if you encounter the same error with the
 > `archidep2.ch` domain.
 
-### :boom: My changes to `config/local.exs` are not taken into account
-
-Contrary to environment variables, the `config/local.exs` file is not read at
-runtime (when the application starts), but is embedded into the application at
-compilation time.
-
-If you are running the application in development mode with `mix phx.server`,
-re-compilation is done automatically for you, meaning it will always use the
-latest version of the `config/local.exs` file.
-
-Once you have created the production release with `MIX_ENV=prod mix release`,
-the version of the `config/local.exs` file that existed when you created the
-release has been included into the compiled release. Any subsequent changes to
-the original file will not be taken into account unless you _re-create the
-release_.
-
-Unlike with Apache & PHP, Elixir code (or Ruby code, or Python code, etc) is not
-reloaded automatically on each request. You must _also restart the application_
-to take your changes into account.
-
+[ajax]: https://en.wikipedia.org/wiki/Ajax_(programming)
 [angular]: https://angular.io
+[api]: https://en.wikipedia.org/wiki/API
 [archidep-exercises]: https://github.com/MediaComem/comem-archidep#exercises
 [auto-deploy-ex]: https://github.com/MediaComem/comem-archidep/blob/master/ex/git-automated-deployment.md
 [automated-deployment-nginx-update]: https://github.com/MediaComem/comem-archidep/blob/master/ex/git-automated-deployment.md#update-the-todolist-nginx-configuration
 [automated-tests]: https://en.wikipedia.org/wiki/Test_automation
 [certbot-ex]: certbot-deployment.md
 [composer]: https://getcomposer.org
+[cross-platform]: https://en.wikipedia.org/wiki/Cross-platform_software
 [fork]: https://docs.github.com/en/get-started/quickstart/fork-a-repo
+[frontend-and-backend]: https://en.wikipedia.org/wiki/Frontend_and_backend
+[gui]: https://en.wikipedia.org/wiki/Graphical_user_interface
 [http-502]: https://httpstatuses.com/502
 [initial-setup]: https://github.com/MediaComem/floodit#initial-setup
+[jar]: https://en.wikipedia.org/wiki/JAR_(file_format)
 [java]: https://www.oracle.com/java/
+[java-bytecode]: https://en.wikipedia.org/wiki/Java_bytecode
+[java-jdk-jre]: https://en.wikipedia.org/wiki/Java_(software_platform)#Java_Development_Kit
+[jdk]: https://en.wikipedia.org/wiki/Java_Development_Kit
 [js]: https://en.wikipedia.org/wiki/JavaScript
+[json]: https://en.wikipedia.org/wiki/JSON
 [jvm]: https://en.wikipedia.org/wiki/Java_virtual_machine
 [laravel]: https://laravel.com
+[linux-add-swap]: https://github.com/MediaComem/comem-archidep/blob/main/SYSADMIN-CHEATSHEET.md#add-swap-space-to-your-cloud-server
+[linux-unattended-upgrades]: https://wiki.debian.org/UnattendedUpgrades
 [mvc]: https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller
 [mvn]: https://maven.apache.org
 [mvn-central]: https://search.maven.org
@@ -1073,12 +1159,15 @@ to take your changes into account.
 [orm]: https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping
 [php]: https://www.php.net
 [postgres]: https://www.postgresql.org
+[spa]: https://en.wikipedia.org/wiki/Single-page_application
 [spring]: https://spring.io
 [spring-boot]: https://spring.io/projects/spring-boot
 [readme]: https://github.com/MediaComem/floodit#readme
 [repo]: https://github.com/MediaComem/floodit
 [sun]: https://en.wikipedia.org/wiki/Sun_Microsystems
 [systemd-ex]: systemd-deployment.md
+[tailwind]: https://tailwindcss.com
+[ui]: https://en.wikipedia.org/wiki/User_interface
 [url]: https://en.wikipedia.org/wiki/URL#Syntax
 [visudo]: https://linux.die.net/man/8/visudo
 [webpack]: https://webpack.js.org
