@@ -147,8 +147,10 @@ You must [fork][fork] the [application's repository][repo] to your own GitHub
 account, because this exercise requires that you make changes to the application
 later, after setting up the automated deployment with Git hooks.
 
-:warning: Use your **own** repository's SSH clone URL. This way you will have
-push access to your repository.
+:warning: On your local machine, use your **own** repository's SSH clone URL.
+This way you will have push access to your repository.
+
+:warning: On your Azure VM, use your **own** repository's HTTPS clone URL.
 
 ### :exclamation: Install the requirements
 
@@ -172,9 +174,9 @@ described in the [project's README][readme] on your server:
 
   > :books: TODO: jre vs jdk
 
-- **How to install Maven:** follow these instructions to [**Install Mavenon
-  Ubuntu with apt**](https://phoenixnap.com/kb/install-maven-on-ubuntu) (the
-  first 3 steps only).
+- **How to install Maven:** follow these instructions to [**Install Maven on
+  Ubuntu with apt**](https://phoenixnap.com/kb/install-maven-on-ubuntu)
+  (:warning: **the first 3 steps only**).
 - **How to install Node.js:** there are several methods to install Node.js. One
   of the simplest is to use the [binary distributions provided by
   NodeSource][node-install]. You should look for installation instructions
@@ -193,21 +195,42 @@ described in the [project's README][readme] on your server:
 
   ```bash
   $> java -version
-  openjdk version "18.0.2" 2022-07-19
-  OpenJDK Runtime Environment (build 18.0.2+9-61)
-  OpenJDK 64-Bit Server VM (build 18.0.2+9-61, mixed mode, sharing)
+  openjdk version "17.0.5" 2022-10-18
+  OpenJDK Runtime Environment (build 17.0.5+8-Ubuntu-2ubuntu122.04)
+  OpenJDK 64-Bit Server VM (build 17.0.5+8-Ubuntu-2ubuntu122.04, mixed mode, sharing)
   ```
+
+  > It's not a problem if you don't have this exact version installed, as long
+  > as you have a version compatible with the Flood It application's
+  > requirements.
+
+- You can check that **Maven has been correctly installed** by displaying the
+  version of the `mvn` command:
+
+  ```bash
+  $> mvn --version
+  Apache Maven 3.6.3
+  Maven home: /usr/share/maven
+  Java version: 17.0.5, vendor: Private Build, runtime: /usr/lib/jvm/java-17-openjdk-amd64
+  Default locale: en_US, platform encoding: UTF-8
+  OS name: "linux", version: "5.15.0-1023-azure", arch: "amd64", family: "unix"
+  ```
+
+  > It's not a problem if you don't have this exact version installed, as long
+  > as you have a version compatible with the Flood It application's
+  > requirements.
 
 - You can check that **Node.js has been correctly installed** by displaying the
   version of the `node` command:
 
   ```bash
   $> node --version
-  v18.7.0
+  v18.12.1
   ```
 
   > It's not a problem if you don't have this exact version installed, as long
-  > as you have version 18.x.
+  > as you have a version compatible with the Flood It application's
+  > requirements.
 
   You can also check that Node.js is working correctly by running the following
   command:
@@ -222,11 +245,15 @@ described in the [project's README][readme] on your server:
 
   ```bash
   $> psql --version
-  psql (PostgreSQL) 12.9 (Ubuntu 12.9-0ubuntu0.20.04.1)
+  psql (PostgreSQL) 15.1 (Ubuntu 15.1-1.pgdg22.04+1)
   ```
 
-  You can verify that PostgreSQL is running by showing the status of its Systemd
-  service:
+  > It's not a problem if you don't have this exact version installed, as long
+  > as you have a version compatible with the Flood It application's
+  > requirements.
+
+  You can also verify that PostgreSQL is running by showing the status of its
+  Systemd service:
 
   ```bash
   $> sudo systemctl status postgresql
@@ -271,6 +298,10 @@ described in the [project's README][readme] on your server:
 You must perform the **initial setup** instructions indicated in the [project's
 README][readme].
 
+:warning: Since you will need to commit and push changes later, **do not** clone
+the `https://github.com/MediaComem/floodit.git` repository as indicated in the
+README. **Use your own fork's HTTPS clone URL**.
+
 > - :gem: The Flood It application has two configuration mechanisms: environment
 >   variables or a local configuration file. You can use either one of them. It
 >   does not matter which you choose. Both are equally valid way of configuring
@@ -280,10 +311,10 @@ README][readme].
 >   todolist, you will need to provide these environment variables through
 >   Systemd later.
 >
->   The `export` sample commands provided in the README will only set the
->   variables in the shell/SSH session where you run them. You will need to run
->   them again in each new shell, or add them to your shell's startup
->   configuration file (`.bash_profile`) on the server.
+>   The `export` sample commands provided in the README are only examples and
+>   will only set the variables in the shell/SSH session where you run them. You
+>   will need to run them again in each new shell. To run the application in
+>   production mode, you will need to provide the variables through Systemd.
 
 ### :books: What sorcery is this?
 
@@ -299,7 +330,19 @@ to manage PostgreSQL users and databases on the command line:
   database named "floodit" and owned by the "floodit" user. This is the database
   that the application will use.
 
-:books: This setup is equivalent to [part of the `todolist.sql`
+  You can see this new database by listing all available databases:
+
+  ```bash
+  $> sudo -u postgres psql -l
+                                              List of databases
+    Name    |  Owner   | Encoding | Collate |  Ctype  | ICU Locale | Locale Provider |   Access privileges
+  -----------+----------+----------+---------+---------+------------+-----------------+-----------------------
+  floodit   | floodit  | UTF8     | C.UTF-8 | C.UTF-8 |            | libc            |
+  ...
+  ```
+
+:books: These database setup commands are equivalent to [part of the
+`todolist.sql`
 script](https://github.com/MediaComem/comem-archidep-php-todo-exercise/blob/5d46e9fcf974d3d74d5eec838c512798f02581e1/todolist.sql#L1-L8)
 you executed when first deploying the PHP todolist.
 
@@ -366,6 +409,39 @@ is working properly, including that:
 - The application can successfully connect to and migrate the database.
 - The application behaves as specified.
 
+Running the tests might take a minute or two, then the following output should
+be displayed, indicating that all tests were successful:
+
+```
+...
+[INFO]
+[INFO] Results:
+[INFO]
+[INFO] Tests run: 19, Failures: 0, Errors: 0, Skipped: 0
+[INFO]
+[INFO]
+[INFO] --- jacoco-maven-plugin:0.8.8:report (jacoco-site) @ floodit ---
+[INFO] Loading execution data file /home/john_doe/floodit/backend/target/jacoco.exec
+[INFO] Analyzed bundle 'floodit' with 19 classes
+[INFO]
+[INFO] ------------------< ch.comem.archidep:floodit-parent >------------------
+[INFO] Building floodit-parent 1.0.0                                      [2/2]
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO]
+[INFO] --- maven-clean-plugin:2.5:clean (default-clean) @ floodit-parent ---
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO]
+[INFO] floodit 1.0.0-SNAPSHOT ............................. SUCCESS [ 34.216 s]
+[INFO] floodit-parent 1.0.0 ............................... SUCCESS [  0.069 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  34.789 s
+[INFO] Finished at: 2022-11-24T09:51:34Z
+[INFO] ------------------------------------------------------------------------
+```
+
 > :books: If you are curious, the source code for these tests is in [the `test`
 > directory](https://github.com/MediaComem/floodit/tree/main/backend/src/main/test).
 
@@ -374,25 +450,24 @@ is working properly, including that:
 Before running the application in production mode and attempting to set up the
 systemd service, nginx configuration and automated deployment, you can manually
 run the application in development mode to make sure it works. The [project's
-README][readme] explains how to do this.
+README][readme] explains how to do this. You will need two terminals connected
+to your server: one to run the backend, and one to run the frontend.
 
-You can set the `FLOODIT_SERVER_PORT` environment variable or the `server.port`
-parameter in the local configuration file to `3001` for this simple test, as
-that is one of the ports that should be open in your server's firewall. Run the
-application on that port and visit http://W.X.Y.Z:3001 to check that it works
-(replacing `W.X.Y.Z` by your server's IP address). Stop the application by
+You can run the frontend application on port `3001` for this simple test, as
+that is one of the ports that should be open in your server's firewall. You must
+also make it available to external clients. The project's README explains how to
+do this.
+
+Once you have both backend and frontend running in your two terminals, you
+should be able to visit http://W.X.Y.Z:3001 to check that the application works
+(replacing `W.X.Y.Z` by your server's IP address). Stop both components by
 typing `Ctrl-C` once you are done.
-
-TODO: explain frontend
 
 ### :exclamation: Run the application in production mode
 
 Follow the instructions in the [project's README][readme] to run the application
 in production mode.
 
-> :books: You will once again recompile the application, this time in production
-> mode.
->
 > :books: To run a Maven project in production, you must install it (i.e. the
 > `mvn clean install` command), which will create a JAR file.. This is basically
 > a ZIP file of the compiled Java application, which can be run by any Java
@@ -618,6 +693,10 @@ Note that some of these errors can happen in various situations:
 - When systemd tries to start your service.
 - When your `post-receive` Git hook executes.
 
+### :boom: Daemons using outdated libraries
+
+TODO: get screenshot from vlr
+
 ### :boom: Maven command in wrong directory
 
 TODO: attempt to run maven command in wrong directory
@@ -690,13 +769,13 @@ If you see an error similar to this when running the application:
 ```
 
 It means that there is already an application or other process listening on the
-port Flood It is trying to listen on (port `3000` by default). You should use
+port Flood It is trying to listen on (port `5000` by default). You should use
 the `$FLOODIT_SERVER_PORT` environment variable or the `server.port` parameter
 in the local configuration file to change the port, for example if you are
 trying to run the application in development mode:
 
 ```bash
-$> FLOODIT_SERVER_PORT=4321 mix phx.server
+$> FLOODIT_SERVER_PORT=5001 mix phx.server
 ```
 
 ### :boom: `remote: sudo: no tty present and no askpass program specified`

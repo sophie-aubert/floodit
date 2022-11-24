@@ -20,13 +20,14 @@ backend and [Angular][angular] in [JavaScript][js] for the frontend.
 
 To run the application, you will need:
 
-- [PostgreSQL][postgresql] 12, 13 or 14
+- The [Java][java] 17 JRE
+- [PostgreSQL][postgresql] 12, 13, 14 or 15
 
 Additionally, to compile the backend and frontend, you will need:
 
 - The [Java][java] 17 JDK
-- [Maven][maven] 3
-- [Node.js][node] 18
+- [Maven][maven] 3.x
+- [Node.js][node] 18.x
 
 ## Initial setup
 
@@ -100,7 +101,7 @@ Additionally, to compile the backend and frontend, you will need:
     ```
 
     Read the instructions contained in the file and fill in the database
-    connection URL and web endpoint settings.
+    connection parameters and web endpoint settings.
 
     > The `backend/config/application-default.local.yml` file will be ignored by
     > Git.
@@ -117,6 +118,38 @@ suite][automated-tests]:
   $> sudo -u postgres createdb --owner floodit floodit-test
   ```
 
+- Configure the application for testing:
+
+  - Either set any of the [documented environment
+    variables](#environment-variables), for example:
+
+    ```bash
+    export FLOODIT_TEST_DATABASE_HOST=localhost
+    export FLOODIT_TEST_DATABASE_PORT=5432
+    export FLOODIT_TEST_DATABASE_NAME=floodit
+    export FLOODIT_TEST_DATABASE_USERNAME=floodit
+    export FLOODIT_TEST_DATABASE_PASSWORD=mysecretpassword
+    ```
+
+  - Or create a local configuration file based on the provided sample:
+
+    ```bash
+    cp backend/config/application-test.local.sample.yml backend/config/application-test.local.yml
+    ```
+
+    Edit `backend/config/application-test.local.yml` with your favorite editor:
+
+    ```bash
+    nano backend/config/application-test.local.yml
+    vim backend/config/application-test.local.yml
+    ```
+
+    Read the instructions contained in the file and fill in the database
+    connection parameters.
+
+    > The `backend/config/application-test.local.yml` file will be ignored by
+    > Git.
+
 - Run the automated tests:
 
   ```bash
@@ -130,21 +163,51 @@ You should see no errors.
 
 ## Run the application in development mode
 
-You can run the application manually by executing the following command from the
-repository:
+You can run the backend application manually by executing the following command
+from the repository:
 
 ```bash
 mvn spring-boot:run
 ```
 
-The application runs on port 3000 by default. If that port is already in use,
-you can use the `server.port` parameter in the local configuration file or the
-`$FLOODIT_SERVER_PORT` environment variable to switch to another port, for
-example:
+> The backend application runs on port 5000 by default. If that port is already in
+> use, you can use the `server.port` parameter in the local configuration file or
+> the `$FLOODIT_SERVER_PORT` environment variable to switch to another port, for
+> example:
+>
+> ```bash
+> $> FLOODIT_SERVER_PORT=5001 mvn spring-boot:run
+> ```
+
+You can run the frontend application manually by executing the following command
+from the repository:
 
 ```bash
-$> FLOODIT_SERVER_PORT=3001 mvn spring-boot:run
+$> npm start
 ```
+
+> The frontend application runs on port 4200 by default. If that port is already
+> in use or you want to use another port, you can add the `--port <number>`
+> option to switch to another port.
+>
+> By default, the frontend application is only available locally. Add the
+> `--host 0.0.0.0` option to the last command to make it available to external
+> clients.
+>
+> You must add an additional `--` before any other option due to how `npm`
+> passes options through, for example:
+>
+> ```bash
+> npm start -- --host 0.0.0.0 --port 3000
+> ```
+>
+> If you have changed the backend server port to a different port than 5000 you
+> should also set the `$FLOODIT_FRONTEND_API_PROXY_PORT` variable to the same
+> port number when running the frontend in development mode below, for example:
+>
+> ```bash
+> FLOODIT_FRONTEND_API_PROXY_PORT=5001 npm start -- --host 0.0.0.0 --port 3000
+> ```
 
 ## Run the application in production mode
 
@@ -154,13 +217,30 @@ Build the backend application:
 mvn clean install -Pskip-test
 ```
 
-Run the packaged [JAR file][jar]. This must be done from the `backend` directory
-in the repository:
+Build the frontend application:
+
+```bash
+npm run build
+```
+
+The static web files of the frontend will be saved in the `frontend/dist`
+directory:
+
+```bash
+ls frontend/dist/
+```
+
+Run the backend by executing the packaged [JAR file][jar]. This must be done
+from the `backend` directory in the repository:
 
 ```bash
 cd backend
 java -jar target/floodit-1.0.0-SNAPSHOT.jar
 ```
+
+You can use your favorite web server and reverse proxy (e.g. Apache/nginx) to
+serve the frontend's files. `/api` requests should be proxied to the backend
+listening on port 5000 (or whatever port you configured).
 
 ## Updating
 
@@ -191,19 +271,20 @@ You can configure the application in one of two ways:
 
 ### Environment variables
 
-| Environment variable             | Default value  | Description                                                    |
-| :------------------------------- | :------------- | :------------------------------------------------------------- |
-| `FLOODIT_DATABASE_HOST`          | `localhost`    | The host at which the PostgreSQL database can be reached.      |
-| `FLOODIT_DATABASE_PORT`          | `5432`         | The port at which the PostgreSQL database can be reached.      |
-| `FLOODIT_DATABASE_NAME`          | `floodit`      | The name of the PostgreSQL database.                           |
-| `FLOODIT_DATABASE_USERNAME`      | `floodit`      | The PostgreSQL user to connect as.                             |
-| `FLOODIT_DATABASE_PASSWORD`      | -              | The password of the PostgreSQL user.                           |
-| `FLOODIT_SERVER_PORT`            | `5000`         | The port the HTTP server listens on.                           |
-| `FLOODIT_TEST_DATABASE_HOST`     | `localhost`    | The host at which the PostgreSQL test database can be reached. |
-| `FLOODIT_TEST_DATABASE_PORT`     | `5432`         | The port at which the PostgreSQL test database can be reached. |
-| `FLOODIT_TEST_DATABASE_NAME`     | `floodit-test` | The name of the PostgreSQL test database.                      |
-| `FLOODIT_TEST_DATABASE_USERNAME` | `floodit`      | The PostgreSQL user to connect as for the test database.       |
-| `FLOODIT_TEST_DATABASE_PASSWORD` | -              | The password of the PostgreSQL user for the test database.     |
+| Environment variable              | Default value  | Description                                                                              |
+| :-------------------------------- | :------------- | :--------------------------------------------------------------------------------------- |
+| `FLOODIT_DATABASE_HOST`           | `localhost`    | The host at which the PostgreSQL database can be reached.                                |
+| `FLOODIT_DATABASE_PORT`           | `5432`         | The port at which the PostgreSQL database can be reached.                                |
+| `FLOODIT_DATABASE_NAME`           | `floodit`      | The name of the PostgreSQL database.                                                     |
+| `FLOODIT_DATABASE_USERNAME`       | `floodit`      | The PostgreSQL user to connect as.                                                       |
+| `FLOODIT_DATABASE_PASSWORD`       | -              | The password of the PostgreSQL user.                                                     |
+| `FLOODIT_SERVER_PORT`             | `5000`         | The port the HTTP server listens on.                                                     |
+| `FLOODIT_FRONTEND_API_PROXY_PORT` | `5000`         | The local port the frontend will proxy API requests to when running in development mode. |
+| `FLOODIT_TEST_DATABASE_HOST`      | `localhost`    | The host at which the PostgreSQL test database can be reached.                           |
+| `FLOODIT_TEST_DATABASE_PORT`      | `5432`         | The port at which the PostgreSQL test database can be reached.                           |
+| `FLOODIT_TEST_DATABASE_NAME`      | `floodit-test` | The name of the PostgreSQL test database.                                                |
+| `FLOODIT_TEST_DATABASE_USERNAME`  | `floodit`      | The PostgreSQL user to connect as for the test database.                                 |
+| `FLOODIT_TEST_DATABASE_PASSWORD`  | -              | The password of the PostgreSQL user for the test database.                               |
 
 [angular]: https://angular.io
 [automated-tests]: https://en.wikipedia.org/wiki/Test_automation
