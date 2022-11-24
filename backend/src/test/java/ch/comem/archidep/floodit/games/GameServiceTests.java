@@ -24,6 +24,7 @@ import ch.comem.archidep.floodit.rules.Position;
 import ch.comem.archidep.floodit.utils.AbstractServiceTests;
 import ch.comem.archidep.floodit.utils.TestUtils;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -118,12 +119,12 @@ class GameServiceTests extends AbstractServiceTests {
       );
       assertThat(createdGame.getMoves(), is(empty()));
       assertThat(
-        createdGame.getCreatedAt(),
-        is(equalTo(result.getCreatedAt()))
+        createdGame.getCreatedAt().truncatedTo(ChronoUnit.MILLIS),
+        is(equalTo(result.getCreatedAt().truncatedTo(ChronoUnit.MILLIS)))
       );
       assertThat(
-        createdGame.getUpdatedAt(),
-        is(equalTo(result.getUpdatedAt()))
+        createdGame.getUpdatedAt().truncatedTo(ChronoUnit.MILLIS),
+        is(equalTo(result.getUpdatedAt().truncatedTo(ChronoUnit.MILLIS)))
       );
       assertThat(createdGame.getVersion(), is(equalTo(0L)));
       assertThat(
