@@ -1,7 +1,7 @@
 # Web server configuration
 server:
   # The port the server will listen on.
-  port: 3000
+  port: 5000
 
 # Spring Boot configuration
 spring:

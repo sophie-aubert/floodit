@@ -1,5 +1,5 @@
 server:
-  port: ${FLOODIT_SERVER_PORT:3000}
+  port: ${FLOODIT_SERVER_PORT:5000}
 
 spring:
   datasource:
