@@ -1,5 +1,12 @@
+# Spring Boot configuration
 spring:
+  # Database connection parameters
   datasource:
+    # The test database connection URL in the format:
+    # "jdbc:postgresql://<host>:[port]/<database>" (the port is optional and
+    # defaults to 5432).
     url: jdbc:postgresql://localhost/floodit-test
+    # The name of the PostgreSQL user to connect as.
     username: floodit
+    # The password of the PostgreSQL user.
     password: changeme
