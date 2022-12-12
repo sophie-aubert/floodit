@@ -7,6 +7,7 @@ backend and [Angular][angular] in [JavaScript][js] for the frontend.
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [Requirements](#requirements)
+- [Install Maven](#install-maven)
 - [Initial setup](#initial-setup)
 - [Run the automated tests](#run-the-automated-tests)
 - [Run the application in development mode](#run-the-application-in-development-mode)
