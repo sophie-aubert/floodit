@@ -7,7 +7,6 @@ backend and [Angular][angular] in [JavaScript][js] for the frontend.
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [Requirements](#requirements)
-- [Install Maven](#install-maven)
 - [Initial setup](#initial-setup)
 - [Run the automated tests](#run-the-automated-tests)
 - [Run the application in development mode](#run-the-application-in-development-mode)
@@ -28,37 +27,8 @@ To run the application, you will need:
 Additionally, to compile the backend and frontend, you will need:
 
 - The [Java][java] 17 JDK
+- [Maven][maven] 3.8.6
 - [Node.js][node] 18.x
-- [Maven][maven] 3.8.6 (instructions below)
-
-## Install Maven
-
-After taking care of the other requirements, you will need to install Apache Maven. Unfortunetly the version of Maven available from apt is not compatible with Java 17.
-We will therefore install a newer version, using a script from this repo.
-
-- Clone the repository
-
-  ```bash
-  $> git clone git@github.com:AlphaHydrae/floodit.git
-  ```
-
-- Run the `install-maven.sh` script:
-
-  ```bash
-  $> cd floodit
-  $> sudo sh maven-install.sh && source /etc/profile.d/maven.sh
-  ```
-
-- Check the script has worked properly.
-
-  ```bash
-  $> mvn -v
-  Apache Maven 3.8.6 (84538c9988a25aec085021c365c560670ad80f63)
-  Maven home: /opt/maven
-  Java version: 17.0.5, vendor: Private Build, runtime: /usr/lib/jvm/java-17-openjdk-amd64
-  Default locale: en, platform encoding: UTF-8
-  OS name: "linux", version: "5.15.0-1023-azure", arch: "amd64", family: "unix"
-  ```
 
 ## Initial setup
 
@@ -82,6 +52,12 @@ We will therefore install a newer version, using a script from this repo.
 
   ```bash
   $> sudo -u postgres createdb --owner floodit floodit
+  ```
+
+- Clone the repository:
+
+  ```bash
+  $> git clone https://github.com/MediaComem/floodit.git
   ```
 
 - Download dependencies and compile the application (_this might take a while

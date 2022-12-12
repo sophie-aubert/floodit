@@ -181,9 +181,27 @@ described in the [project's README][readme] on your server:
   You should install a package named `openjdk-<version>-jdk` where `<version>`
   is the Java version required by the Flood It application.
 
-- **How to install Maven:** follow these instructions to [**Install Maven on
-  Ubuntu with apt**](https://phoenixnap.com/kb/install-maven-on-ubuntu)
-  (:warning: **the first 3 steps only**).
+- **How to install Maven:**
+Unfortunetly the version of Maven available from apt is not compatible with Java 17.
+We will therefore install a newer version, using a script located in the floodit repo. So if you have yet to clone your fork, now's a good time.
+
+  - Run the `install-maven.sh` script:
+
+    ```bash
+    $> cd floodit
+    $> sudo sh maven-install.sh && source /etc/profile.d/maven.sh
+    ```
+
+  - Check the script has worked properly.
+
+    ```bash
+    $> mvn -v
+    Apache Maven 3.8.6 (84538c9988a25aec085021c365c560670ad80f63)
+    Maven home: /opt/maven
+    Java version: 17.0.5, vendor: Private Build, runtime: /usr/lib/jvm/java-17-openjdk-amd64
+    Default locale: en, platform encoding: UTF-8
+    OS name: "linux", version: "5.15.0-1023-azure", arch: "amd64", family: "unix"
+    ```
 - **How to install Node.js:** there are several methods to install Node.js. One
   of the simplest is to use the [binary distributions provided by
   NodeSource][node-install]. You should look for installation instructions
