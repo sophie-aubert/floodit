@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TMP_MAVEN_VERSION=${1:-"3.8.4"}
+TMP_MAVEN_VERSION=${1:-"3.8.6"}
 
 # Download Maven
 wget https://apache.org/dist/maven/maven-3/$TMP_MAVEN_VERSION/binaries/apache-maven-$TMP_MAVEN_VERSION-bin.tar.gz -P /tmp
