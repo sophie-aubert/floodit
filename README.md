@@ -57,7 +57,7 @@ Additionally, to compile the backend and frontend, you will need:
 - Clone the repository:
 
   ```bash
-  $> git clone https://github.com/MediaComem/floodit.git
+  $> git clone git@github.com:AlphaHydrae/floodit.git
   ```
 
 - Download dependencies and compile the application (_this might take a while
