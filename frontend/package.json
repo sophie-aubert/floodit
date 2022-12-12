@@ -6,7 +6,7 @@
   "author": "Simon Oulevay <npm@alphahydrae.com>",
   "private": true,
   "scripts": {
-    "build": "ng build",
+    "build": "NODE_OPTIONS=--max_old_space_size=8048 ng build",
     "ng": "ng",
     "start": "cross-env NODE_OPTIONS=--max_old_space_size=8048 ng serve",
     "test": "ng test",
