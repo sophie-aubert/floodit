@@ -12,7 +12,6 @@ sudo ln -s /opt/apache-maven-$TMP_MAVEN_VERSION /opt/maven
 
 # Setup environment variables
 sudo touch /etc/profile.d/maven.sh
-sudo chown ubuntu /etc/profile.d/maven.sh
 sudo chmod +x /etc/profile.d/maven.sh
 >> /etc/profile.d/maven.sh echo "export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-arm64"
 >> /etc/profile.d/maven.sh echo "export M2_HOME=/opt/maven"
