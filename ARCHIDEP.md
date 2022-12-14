@@ -722,7 +722,7 @@ Here's some visible changes you could easily make:
   `frontend/src/app/pages/dashboard/dashboard.component.html`
   file](https://github.com/MediaComem/floodit/blob/04cf2bdad154aae574d974d7984d8d19e4dcb504/frontend/src/app/pages/dashboard/dashboard.component.html#L7-L38).
 
-## :exclamation: Notify the teacher
+## :exclamation: Notify the teachers
 
 Send an email or a Teams message to both teachers **no later than December 13th
 2022 at 23:59 CET** indicating that you have finished the exercise.
