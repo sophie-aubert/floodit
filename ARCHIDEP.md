@@ -592,10 +592,7 @@ contains the application's public web assets.
 >   with a [`proxy_pass`
 >   directive](http://nginx.org/en/docs/http/ngx_http_proxy_module.html#proxy_pass).
 >   as [presented during the course][nginx-rp-conf] and as you have done in the
-
-    [multi-component
-    exercise](https://github.com/MediaComem/comem-archidep/blob/main/ex/revprod-deployment.md).
-
+>   [multi-component exercise](https://github.com/MediaComem/comem-archidep/blob/main/ex/revprod-deployment.md).
 > - :space_invader: You can also point the nginx configuration directly to the
 >   automated deployment structure. That way you will not have to modify it
 >   later.
