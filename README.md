@@ -27,13 +27,12 @@ To run the application, you will need:
 Additionally, to compile the backend and frontend, you will need:
 
 - The [Java][java] 17 JDK
-- [Maven][maven] 3.8.6
-- [Node.js][node] 18.x
+- [Maven][maven] 3.8
+- [Node.js][node] 18
 
 ## Initial setup
 
-- Create a PostgreSQL user named `floodit` for the application (**be sure to
-  remember the password you type**, you will need it later):
+- Create a PostgreSQL user named `floodit` for the application:
 
   ```bash
   $> sudo -u postgres createuser --interactive --pwprompt floodit
@@ -60,8 +59,8 @@ Additionally, to compile the backend and frontend, you will need:
   $> git clone https://github.com/MediaComem/floodit.git
   ```
 
-- Download dependencies and compile the application (_this might take a while
-  the first time_):
+- Download dependencies and compile the application (_grab a coffee, this might
+  take a while the first time_):
 
   ```bash
   $> cd floodit
@@ -74,7 +73,7 @@ Additionally, to compile the backend and frontend, you will need:
   $> npm ci
   ```
 
-- Configure the application:
+- You can configure the application in one of two ways:
 
   - Either set any of the [documented environment
     variables](#environment-variables), for example:
@@ -171,10 +170,10 @@ from the repository:
 mvn spring-boot:run
 ```
 
-> The backend application runs on port 5000 by default. If that port is already in
-> use, you can use the `server.port` parameter in the local configuration file or
-> the `$FLOODIT_SERVER_PORT` environment variable to switch to another port, for
-> example:
+> The backend application runs on port 5000 by default. If that port is already
+> in use, you can use the `server.port` parameter in the local configuration
+> file or the `$FLOODIT_SERVER_PORT` environment variable to switch to another
+> port, for example:
 >
 > ```bash
 > $> FLOODIT_SERVER_PORT=5001 mvn spring-boot:run
